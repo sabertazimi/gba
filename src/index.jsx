@@ -1,5 +1,8 @@
 import React from 'react';
 import { render } from 'react-dom';
+
 import App from './App';
 
-render(<App />, document.getElementById('root'));
+import './index.scss';
+
+render(<App rows={20} cols={20} />, document.getElementById('root'));
