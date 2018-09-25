@@ -7,7 +7,20 @@ class AI {
     this.config = config || {};
   }
 
-  process(map, rows, cols, x, y, turn) {
+
+  /**
+   *
+   *
+   * @param {*} map current gobang board map
+   * @param {number} rows board size
+   * @param {number} cols board size
+   * @param {number} x position last player setting
+   * @param {number} y position last player setting
+   * @param {number} color color of last player
+   * @returns object of {x, y}
+   * @memberof AI
+   */
+  process(map, rows, cols, x, y, color) {
     for (let i = 0; i < rows; i += 1) {
       for (let j = 0; j < cols; j += 1) {
         if (map[i][j] === EMPTY) {
@@ -19,13 +32,8 @@ class AI {
       }
     }
 
-    console.log(map);
-    console.log(rows);
-    console.log(cols);
-    console.log(x);
-    console.log(y);
-    console.log(turn);
     console.log(this.config);
+    console.log(color);
 
     return {
       x: 0,

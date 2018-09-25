@@ -2,12 +2,16 @@
 
 .gobang {
   display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80vw;
+  margin: 0 auto;
 }
 
 .board {
   position: relative;
   flex: 1;
-  height: 100vh;
+  height: 484px;
 }
 
 .cells {

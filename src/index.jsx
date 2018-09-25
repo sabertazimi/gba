@@ -5,4 +5,4 @@ import App from './App';
 
 import './index.scss';
 
-render(<App rows={20} cols={20} />, document.getElementById('root'));
+render(<App rows={15} cols={15} />, document.getElementById('root'));
