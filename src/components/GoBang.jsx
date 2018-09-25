@@ -133,6 +133,7 @@ class GoBang extends React.Component {
       'Playing ...',
       'Black Wins',
       'White Wins',
+      'Dead Game',
     ];
     const enabled = (result !== BLACK && result !== WHITE);
 
