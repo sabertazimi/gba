@@ -14,6 +14,8 @@ import {
 import Grid from './Grid';
 import Cell from './Cell';
 
+import './GoBang.scss';
+
 class GoBang extends React.Component {
   constructor(props) {
     super(props);
@@ -108,7 +110,11 @@ class GoBang extends React.Component {
       map,
     } = this.state;
     const cellNodes = [];
-    const resultText = ['', 'black win', 'white win'][result];
+    const resultText = [
+      'Playing ...',
+      'Black Wins',
+      'White Wins',
+    ];
 
     for (let i = 0; i < rows; i += 1) {
       for (let j = 0; j < cols; j += 1) {
@@ -127,7 +133,7 @@ class GoBang extends React.Component {
     }
 
     return (
-      <div>
+      <div className="gobang">
         <div className="board">
           <div className="cells">
             {cellNodes}
@@ -137,11 +143,10 @@ class GoBang extends React.Component {
 
         <div className="info">
           <button type="button" className="info__button" onClick={() => { this.reset(); }}>
-            reset
+            {resultText[result]}
+            <br />
+            (Click to reset)
           </button>
-          <div className="info__result">
-            {resultText}
-          </div>
         </div>
       </div>
     );

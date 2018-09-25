@@ -5,6 +5,8 @@ import {
   CELL_SIZE,
 } from '../constants';
 
+import './Grid.scss';
+
 const Grid = ({
   rows,
   cols,

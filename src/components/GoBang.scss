@@ -1,0 +1,42 @@
+@import '../common';
+
+.gobang {
+  display: flex;
+}
+
+.board {
+  position: relative;
+  flex: 1;
+  height: 100vh;
+}
+
+.cells {
+  position: absolute;
+}
+
+.info {
+  position: relative;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+
+  &__button {
+    display: block;
+    transition: 0.2s all ease-in;
+    width: 30%;
+    height: 100px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 2px solid $color-black;
+    border-radius: 5px;
+    background-color: $color-white;
+    color: $color-black;
+  }
+
+  &__button:hover {
+    background-color: $color-black;
+    color: $color-white;
+  }
+}

@@ -7,6 +7,8 @@ import {
   WHITE,
 } from '../constants';
 
+import './Cell.scss';
+
 const Cell = (props) => {
   const {
     x,
