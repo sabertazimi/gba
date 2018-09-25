@@ -35,7 +35,14 @@
     color: $color-black;
   }
 
+  &__button--wins {
+    border-color: $color-red;
+    background-color: $color-red;
+    color: $color-white;
+  }
+
   &__button:hover {
+    border-color: $color-black;
     background-color: $color-black;
     color: $color-white;
   }

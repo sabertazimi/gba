@@ -14,6 +14,8 @@ import {
 import Grid from './Grid';
 import Cell from './Cell';
 
+import AI from '../core';
+
 import './GoBang.scss';
 
 class GoBang extends React.Component {
@@ -85,13 +87,30 @@ class GoBang extends React.Component {
       map,
     } = this.state;
 
+    const reverseTurn = (color) => {
+      if (color === WHITE) {
+        return BLACK;
+      }
+
+      return WHITE;
+    };
+
     if (!map[y][x]) {
       // row y, column x
       map[y][x] = turn;
+      let afterTurn = reverseTurn(turn);
+      let afterResult = StateManager.checkResult(map, rows, cols, x, y);
+
+      if (afterResult === EMPTY) {
+        const aiStep = AI.process(map, rows, cols, x, y, turn);
+        map[aiStep.y][aiStep.x] = reverseTurn(turn);
+        afterTurn = reverseTurn(afterTurn);
+        afterResult = StateManager.checkResult(map, rows, cols, aiStep.x, aiStep.y);
+      }
 
       const state = {
-        turn: turn === WHITE ? BLACK : WHITE,
-        result: StateManager.checkResult(map, rows, cols, x, y),
+        turn: afterTurn,
+        result: afterResult,
         map,
       };
 
@@ -115,13 +134,18 @@ class GoBang extends React.Component {
       'Black Wins',
       'White Wins',
     ];
+    const enabled = (result !== BLACK && result !== WHITE);
 
     for (let i = 0; i < rows; i += 1) {
       for (let j = 0; j < cols; j += 1) {
         cellNodes.push(
           <Cell
             key={i * rows + j}
-            onClick={() => { this.handleClick(j, i); }}
+            onClick={() => {
+              if (enabled) {
+                this.handleClick(j, i);
+              }
+            }}
             x={j}
             y={i}
             rows={rows}
@@ -142,7 +166,7 @@ class GoBang extends React.Component {
         </div>
 
         <div className="info">
-          <button type="button" className="info__button" onClick={() => { this.reset(); }}>
+          <button type="button" className={`info__button ${enabled ? '' : 'info__button--wins'}`} onClick={() => { this.reset(); }}>
             {resultText[result]}
             <br />
             (Click to reset)
