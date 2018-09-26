@@ -1,7 +1,7 @@
-import Logger from './logger';
+import MapVisitor from './mapVisitor';
 import StateManager from './stateManager';
 
 export {
-  Logger,
+  MapVisitor,
   StateManager,
 };
