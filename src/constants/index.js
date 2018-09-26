@@ -10,3 +10,19 @@ export const GameStatus = {
   START: 1,
   FINISH: 2,
 };
+
+export const Score = {
+  Kill2: 10,
+  Kill3_1: 30,
+  Kill3_2: 40,
+  Kill4_1: 60,
+  Kill4_2: 110,
+  Kill5: 10100,
+  Live1: 5,
+  Live2: 10,
+  Dead3: 25,
+  Live3: 50,
+  Dead4: 55,
+  Live4: 100,
+  Live5: 10000,
+};
