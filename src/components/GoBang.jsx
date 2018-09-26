@@ -154,7 +154,7 @@ class GoBang extends React.Component {
     } = this.state;
     const cellNodes = [];
     const resultText = [
-      `vs ${AI.config.name}`,
+      `vs ${AI.config.name} (AI)`,
       'Black Wins',
       'White Wins',
       'Dead Game',
@@ -192,7 +192,9 @@ class GoBang extends React.Component {
 
         <div className="info">
           <button type="button" className={`info__button ${enabled ? '' : 'info__button--wins'}`} onClick={() => { this.reset(); }}>
-            {resultText[result]}
+            <strong>
+              {resultText[result]}
+            </strong>
             <br />
             (Click to reset)
           </button>

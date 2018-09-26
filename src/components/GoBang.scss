@@ -11,7 +11,9 @@
 .board {
   position: relative;
   flex: 1;
-  height: 484px;
+  min-width: 500px;
+  min-height: 500px;
+  margin: 0 auto;
 }
 
 .cells {
@@ -29,7 +31,7 @@
   &__button {
     display: block;
     transition: 0.2s all ease-in;
-    width: 30%;
+    width: 200px;
     height: 100px;
     margin: 0 auto;
     padding: 20px;
@@ -51,3 +53,16 @@
     color: $color-white;
   }
 }
+
+@media (max-width: 687px) {
+  .gobang {
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .info {
+    height: auto;
+  }
+}
+
