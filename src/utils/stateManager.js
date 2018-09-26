@@ -43,8 +43,6 @@ const StateManger = {
 
       if (cb && cb(currentState, xdir, ydir, i, ...args)) {
         count += 1;
-      } else {
-        break;
       }
     }
 
@@ -56,6 +54,31 @@ const StateManger = {
    * @param  {...any} args arguments to cb1 and cb2 function
    */
   countOnDirections: function countOnDirections(currentState, directions, step, cb1, cb2, ...args) {
+    let count = 0;
+
+    for (let i = 0; i < directions.length; i += 1) {
+      let axisCount = 0;
+      const axis = directions[i];
+
+      for (let j = 0; j < axis.length; j += 1) {
+        const xdir = axis[j][0];
+        const ydir = axis[j][1];
+        axisCount += this.countOnDirection(currentState, xdir, ydir, step, cb2, ...args);
+
+        if (cb1 && cb1(currentState, axisCount, ...args)) {
+          count += 1;
+        }
+      }
+    }
+
+    return count;
+  },
+  /**
+   * @param {function} cb1 outer callback function (currentState, axisCount, ...args)
+   * @param {function} cb2 inner callback function (currentState, xdir, ydir, step, ...args)
+   * @param  {...any} args arguments to cb1 and cb2 function
+   */
+  judgeOnDirections: function judgeOnDirections(currentState, directions, step, cb1, cb2, ...args) {
     for (let i = 0; i < directions.length; i += 1) {
       let axisCount = 1;
       const axis = directions[i];
@@ -73,20 +96,18 @@ const StateManger = {
 
     return false;
   },
-  checkResult: function checkResult(map, rows, cols, x, y) {
+  checkResult: function checkResult(currentState) {
+    const {
+      map,
+      rows,
+      cols,
+      color,
+    } = currentState;
+
     if (this.isDeadGame(map, rows, cols)) {
       return DEATH;
     }
 
-    const color = map[y][x];
-    const currentState = {
-      map,
-      rows,
-      cols,
-      x,
-      y,
-      color,
-    };
     const directions = [
       [
         [-1, 0],
@@ -106,7 +127,7 @@ const StateManger = {
       ],
     ];
 
-    if (this.countOnDirections(currentState, directions, 5,
+    if (this.judgeOnDirections(currentState, directions, 4,
       (_, axisCount) => axisCount >= 5, (state, xdir, ydir, step) => {
         const {
           map: mapp,
