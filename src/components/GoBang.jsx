@@ -102,10 +102,20 @@ class GoBang extends React.Component {
       let afterResult = StateManager.checkResult(map, rows, cols, x, y);
 
       if (afterResult === EMPTY) {
-        const aiStep = AI.process(map, rows, cols, x, y, turn);
-        map[aiStep.y][aiStep.x] = reverseTurn(turn);
-        afterTurn = reverseTurn(afterTurn);
-        afterResult = StateManager.checkResult(map, rows, cols, aiStep.x, aiStep.y);
+        const aiStep = AI.process({
+          map,
+          rows,
+          cols,
+          x,
+          y,
+          turn,
+        });
+
+        if (aiStep.x !== -1 && aiStep.y !== -1) {
+          map[aiStep.y][aiStep.x] = reverseTurn(turn);
+          afterTurn = reverseTurn(afterTurn);
+          afterResult = StateManager.checkResult(map, rows, cols, aiStep.x, aiStep.y);
+        }
       }
 
       const state = {
@@ -130,7 +140,7 @@ class GoBang extends React.Component {
     } = this.state;
     const cellNodes = [];
     const resultText = [
-      'Playing ...',
+      `vs ${AI.config.name}`,
       'Black Wins',
       'White Wins',
       'Dead Game',
