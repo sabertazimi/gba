@@ -44,6 +44,9 @@ const StateManger = {
       [1, 1],
     ];
 
+    let axisFlag = 0;
+    let axisCount = 0;
+
     if (MapVisitor.countOnDirections(currentState, directions, 4,
       (state, xdir, ydir, step) => {
         const {
@@ -54,7 +57,18 @@ const StateManger = {
         } = state;
 
         return mapp[yy + ydir * step][xx + xdir * step] === colorr;
-      }, (_, __, ___, axisCount) => axisCount >= 4)) {
+      }, (_, __, ___, curCount) => {
+        if (axisFlag === 0) {
+          axisFlag = 1;
+          axisCount += curCount;
+          return false;
+        }
+
+        const count = axisCount + curCount;
+        axisFlag = 0;
+        axisCount = 0;
+        return count >= 4;
+      })) {
       return color;
     }
 

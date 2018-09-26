@@ -259,6 +259,7 @@ class AI {
   process(currentState) {
     this.generateScoreMap(currentState);
     const maxPoint = this.getMaxPoint(currentState);
+    console.log(this.scoreMap[maxPoint.y][maxPoint.x]);
     return maxPoint;
   }
 }
