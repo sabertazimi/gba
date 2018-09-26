@@ -59,15 +59,13 @@ const StateManger = {
     for (let i = 0; i < directions.length; i += 1) {
       let axisCount = 0;
       const axis = directions[i];
+      const xdir = axis[0];
+      const ydir = axis[1];
 
-      for (let j = 0; j < axis.length; j += 1) {
-        const xdir = axis[j][0];
-        const ydir = axis[j][1];
-        axisCount += this.countOnDirection(currentState, xdir, ydir, step, cb2, ...args);
+      axisCount += this.countOnDirection(currentState, xdir, ydir, step, cb2, ...args);
 
-        if (cb1 && cb1(currentState, axisCount, ...args)) {
-          count += 1;
-        }
+      if (cb1 && cb1(currentState, axisCount, ...args)) {
+        count += 1;
       }
     }
 
@@ -80,17 +78,14 @@ const StateManger = {
    */
   judgeOnDirections: function judgeOnDirections(currentState, directions, step, cb1, cb2, ...args) {
     for (let i = 0; i < directions.length; i += 1) {
-      let axisCount = 1;
+      let axisCount = 0;
       const axis = directions[i];
+      const xdir = axis[0];
+      const ydir = axis[1];
+      axisCount += this.countOnDirection(currentState, xdir, ydir, step, cb2, ...args);
 
-      for (let j = 0; j < axis.length; j += 1) {
-        const xdir = axis[j][0];
-        const ydir = axis[j][1];
-        axisCount += this.countOnDirection(currentState, xdir, ydir, step, cb2, ...args);
-
-        if (cb1 && cb1(currentState, axisCount, ...args)) {
-          return true;
-        }
+      if (cb1 && cb1(currentState, axisCount, ...args)) {
+        return true;
       }
     }
 
@@ -109,26 +104,18 @@ const StateManger = {
     }
 
     const directions = [
-      [
-        [-1, 0],
-        [1, 0],
-      ],
-      [
-        [0, -1],
-        [0, 1],
-      ],
-      [
-        [-1, 1],
-        [1, -1],
-      ],
-      [
-        [-1, -1],
-        [1, 1],
-      ],
+      [-1, 0],
+      [1, 0],
+      [0, -1],
+      [0, 1],
+      [-1, 1],
+      [1, -1],
+      [-1, -1],
+      [1, 1],
     ];
 
     if (this.judgeOnDirections(currentState, directions, 4,
-      (_, axisCount) => axisCount >= 5, (state, xdir, ydir, step) => {
+      (_, axisCount) => axisCount >= 4, (state, xdir, ydir, step) => {
         const {
           map: mapp,
           x: xx,
