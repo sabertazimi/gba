@@ -23,6 +23,8 @@ const MapVisitor = {
 
       if (cb && cb(currentState, xdir, ydir, i, ...args)) {
         count += 1;
+      } else {
+        break;
       }
     }
 

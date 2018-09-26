@@ -57,7 +57,7 @@ class AI {
     let emptyColorCount = 0;
     let axisFlag = 0;
 
-    const cb1 = (state, xdir, ydir, step) => {
+    const humanCB1 = (state, xdir, ydir, step) => {
       const {
         map: mapp,
         x,
@@ -69,16 +69,17 @@ class AI {
 
       if (currentColor === hcolor) {
         humanColorCount += 1;
-      } else if (currentColor === EMPTY) {
-        emptyColorCount += 1;
-      } else {
-        aiColorCount += 1;
+        return true;
       }
 
-      return true;
+      if (currentColor === EMPTY) {
+        emptyColorCount += 1;
+      }
+
+      return false;
     };
 
-    const cb2 = (state) => {
+    const humanCB2 = (state) => {
       if (axisFlag === 0) {
         axisFlag += 1;
         return true;
@@ -114,6 +115,48 @@ class AI {
           break;
       }
 
+      humanColorCount = 0;
+      emptyColorCount = 0;
+      axisFlag = 0;
+
+      return true;
+    };
+
+    const aiCB1 = (state, xdir, ydir, step) => {
+      const {
+        map: mapp,
+        x,
+        y,
+        color: hcolor,
+      } = state;
+
+      const currentColor = mapp[y + ydir * step][x + xdir * step];
+
+      if (currentColor === EMPTY) {
+        emptyColorCount += 1;
+        return false;
+      }
+
+      if (currentColor !== hcolor) {
+        humanColorCount += 1;
+        return true;
+      }
+
+      return false;
+    };
+
+
+    const aiCB2 = (state) => {
+      if (axisFlag === 0) {
+        axisFlag += 1;
+        return true;
+      }
+
+      const {
+        x,
+        y,
+      } = state;
+
       switch (aiColorCount) {
         case 0:
           this.scoreMap[y][x] += Score.Live1;
@@ -142,7 +185,6 @@ class AI {
           break;
       }
 
-      humanColorCount = 0;
       aiColorCount = 0;
       emptyColorCount = 0;
       axisFlag = 0;
@@ -161,7 +203,15 @@ class AI {
             x: j,
             y: i,
             color,
-          }, directions, 4, cb1, cb2);
+          }, directions, 4, humanCB1, humanCB2);
+          MapVisitor.countOnDirections({
+            map,
+            rows,
+            cols,
+            x: j,
+            y: i,
+            color,
+          }, directions, 4, aiCB1, aiCB2);
         }
       }
     }
