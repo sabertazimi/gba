@@ -18,7 +18,7 @@ export const Score = {
   Kill4_1: 60,
   Kill4_2: 110,
   Kill5: 50100,
-  Live1: 5,
+  Live1: 0,
   Live2: 10,
   Dead3: 25,
   Live3: 50,

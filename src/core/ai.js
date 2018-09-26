@@ -66,7 +66,6 @@ class AI {
       } = state;
 
       const currentColor = mapp[y + ydir * step][x + xdir * step];
-
       if (currentColor === hcolor) {
         humanColorCount += 1;
         return true;
@@ -138,13 +137,12 @@ class AI {
       }
 
       if (currentColor !== hcolor) {
-        humanColorCount += 1;
+        aiColorCount += 1;
         return true;
       }
 
       return false;
     };
-
 
     const aiCB2 = (state) => {
       if (axisFlag === 0) {
@@ -259,7 +257,6 @@ class AI {
   process(currentState) {
     this.generateScoreMap(currentState);
     const maxPoint = this.getMaxPoint(currentState);
-    console.log(this.scoreMap[maxPoint.y][maxPoint.x]);
     return maxPoint;
   }
 }
