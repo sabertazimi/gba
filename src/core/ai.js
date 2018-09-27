@@ -226,22 +226,37 @@ class AI {
     } = currentState;
 
     let maxScore = 0;
-    const maxPoint = {
-      x: -1,
-      y: -1,
-    };
+    const maxPoints = [];
 
     for (let i = 0; i < rows; i += 1) {
       for (let j = 0; j < cols; j += 1) {
-        if (map[i][j] === EMPTY && this.scoreMap[i][j] > maxScore) {
-          maxScore = this.scoreMap[i][j];
-          maxPoint.x = j;
-          maxPoint.y = i;
+        if (map[i][j] === EMPTY) {
+          if (this.scoreMap[i][j] > maxScore) {
+            maxScore = this.scoreMap[i][j];
+            maxPoints.splice(0);
+            maxPoints.push({
+              x: j,
+              y: i,
+            });
+          } else if (this.scoreMap[i][j] === maxScore) {
+            maxPoints.push({
+              x: j,
+              y: i,
+            });
+          }
         }
       }
     }
 
-    return maxPoint;
+    if (maxPoints.length) {
+      const randomNum = Math.floor(Math.random() * (maxPoints.length + 1));
+      return maxPoints[randomNum];
+    }
+
+    return {
+      x: -1,
+      y: -1,
+    };
   }
 
   /**
