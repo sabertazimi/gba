@@ -1,6 +1,7 @@
 import {
   EMPTY,
   Score,
+  AIMode,
 } from '../constants';
 
 import {
@@ -10,6 +11,7 @@ import {
 class AI {
   constructor(config) {
     this.config = config || {};
+    this.mode = this.config.defaultMode || AIMode.EASY;
   }
 
   /**
@@ -215,10 +217,7 @@ class AI {
     }
   }
 
-  /**
-   * @param {matrix} map
-   */
-  getMaxPoint(currentState) {
+  getMaxPointByScoreMap(currentState) {
     const {
       map,
       rows,
@@ -227,6 +226,8 @@ class AI {
 
     let maxScore = 0;
     const maxPoints = [];
+
+    this.generateScoreMap(currentState);
 
     for (let i = 0; i < rows; i += 1) {
       for (let j = 0; j < cols; j += 1) {
@@ -260,6 +261,34 @@ class AI {
   }
 
   /**
+   * @param {matrix} map
+   */
+  getMaxPoint(currentState) {
+    let maxPoint;
+
+    switch (this.mode) {
+      case AIMode.EASY:
+        maxPoint = this.getMaxPointByScoreMap(currentState);
+        break;
+      case AIMode.HARD:
+        maxPoint = this.getMaxPointByMCTS(currentState);
+        break;
+      default:
+        maxPoint = {
+          x: -1,
+          y: -1,
+        };
+        break;
+    }
+
+    return maxPoint;
+  }
+
+  setMode(mode) {
+    this.mode = mode || AIMode.EASY;
+  }
+
+  /**
    * @param {array} map current gobang board map
    * @param {number} rows board size
    * @param {number} cols board size
@@ -270,7 +299,6 @@ class AI {
    * @memberof AI
    */
   process(currentState) {
-    this.generateScoreMap(currentState);
     const maxPoint = this.getMaxPoint(currentState);
     return maxPoint;
   }

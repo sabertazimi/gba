@@ -26,3 +26,9 @@ export const Score = {
   Live4: 100,
   Live5: 90000,
 };
+
+export const AIMode = {
+  EASY: 'easy',
+  MEDIUM: 'medium',
+  HARD: 'hard',
+};

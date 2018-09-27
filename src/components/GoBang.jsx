@@ -196,6 +196,13 @@ class GoBang extends React.Component {
               {resultText[result]}
             </strong>
             <br />
+            <em>
+              (
+              {`${AI.mode} mode`}
+              )
+            </em>
+            <br />
+            <br />
             (Click to reset)
           </button>
         </div>
