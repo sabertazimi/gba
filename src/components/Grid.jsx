@@ -22,6 +22,20 @@ const Grid = ({
         left: j * CELL_SIZE,
       };
 
+      if (i === Math.floor(rows / 2 - 1) && j === Math.floor(cols / 2 - 1)) {
+        styles.borderRightWidth = 3;
+        styles.borderBottomWidth = 3;
+      } else if (i === Math.floor(rows / 2 - 1) && j === Math.floor(cols / 2 - 1) + 1) {
+        styles.borderLeftWidth = 3;
+        styles.borderBottomWidth = 3;
+      } else if (i === Math.floor(rows / 2 - 1) + 1 && j === Math.floor(cols / 2 - 1)) {
+        styles.borderRightWidth = 3;
+        styles.borderTopWidth = 3;
+      } else if (i === Math.floor(rows / 2 - 1) + 1 && j === Math.floor(cols / 2 - 1) + 1) {
+        styles.borderLeftWidth = 3;
+        styles.borderTopWidth = 3;
+      }
+
       cellNodes.push(<div key={i * rows + j} className="cell" style={styles} />);
     }
   }
