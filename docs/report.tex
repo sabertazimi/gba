@@ -1,6 +1,9 @@
 % !TEX program = xelatex
+% !BIB program = bibtex
 \documentclass[UTF8]{ctexart}
 \usepackage{amsmath,amssymb,fancyhdr,url}
+\usepackage[super,square,comma]{natbib} % for \citet and \citep
+\usepackage{hyperref}
 \usepackage{graphicx}
 % \usepackage[pdftex]{graphicx}
  
@@ -15,9 +18,12 @@
 \newpage
 
 \section*{Abstract}
-Monte-Carlo tree search algorithm
+Monte-Carlo tree search algorithm\cite{DBLP:conf/ecml/KocsisS06}\cite{DBLP:conf/aiide/ChaslotBSS08}
 
 \section{Introduction}
-Monte-Carlo tree search algorithm
+Google Deepmind's AlphaGo AI\cite{DBLP:journals/nature/SilverHMGSDSAPL16}\cite{silver2017mastering}
+
+\bibliographystyle{unsrt}
+\bibliography{report}
 
 \end{document}
