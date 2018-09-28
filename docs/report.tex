@@ -6,9 +6,26 @@
 \usepackage{hyperref}
 \usepackage{graphicx}
 % \usepackage[pdftex]{graphicx}
+
+\hypersetup{
+  colorlinks,
+  citecolor=black,
+  filecolor=black,
+  linkcolor=black,
+  urlcolor=black
+}
+
+% \makeatletter
+% \def\@seccntformat#1{%
+%   \expandafter\ifx\csname c@#1\endcsname\c@section
+%   Section \thesection:
+%   \else
+%   \csname the#1\endcsname\quad
+%   \fi}
+% \makeatother
  
 \title{GBA: A Simple Gobang AI Based on Monte-Carlo Tree Search Algorithm}
-\author{Yilong Liu}
+\author{刘一龙}
 \date{\today}
 
 \begin{document}
@@ -17,11 +34,14 @@
 \tableofcontents
 \newpage
 
-\section*{Abstract}
+\section*{摘要}\sectionmark{摘要}
+\addcontentsline{toc}{section}{\protect\numberline{}摘要}
 Monte-Carlo tree search algorithm\cite{DBLP:conf/ecml/KocsisS06}\cite{DBLP:conf/aiide/ChaslotBSS08}
+\newpage
 
-\section{Introduction}
+\section{引言}
 Google Deepmind's AlphaGo AI\cite{DBLP:journals/nature/SilverHMGSDSAPL16}\cite{silver2017mastering}
+\newpage
 
 \bibliographystyle{unsrt}
 \bibliography{report}
