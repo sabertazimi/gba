@@ -250,9 +250,10 @@ class AI {
     }
 
     if (maxPoints.length) {
-      const randomNum = Math.floor(Math.random() * (maxPoints.length + 1));
+      const randomNum = Math.floor(Math.random() * maxPoints.length);
       return maxPoints[randomNum];
     }
+
 
     return {
       x: -1,
