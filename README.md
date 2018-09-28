@@ -36,3 +36,12 @@ UCT selection function = `(wᵢ / sᵢ) + (c * sqrt(ln sₚ / sᵢ))` (exploitat
 add a new node as a child to the last selected node in the selection phase, expanding the search tree. The statistics information in the node is initialized with 0 wins out of 0 simulations (wᵢ = 0, sᵢ = 0)
 
 ### Simulation
+
+### Backpropagation
+
+- Each visited node has its simulation count sᵢ incremented
+- Depending on which player wins, its win count wᵢ may also be incremented
+
+If black wins, so each visited white node’s win count is incremented. This flip is due to the fact that each node’s statistics are used for its parent node’s choice, not its own
+
+The UCB1 function, in turn, uses the numbers of wins wᵢ and simulations sᵢ of the children nodes, and the number of simulations of the parent node sₚ
