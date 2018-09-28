@@ -62,3 +62,7 @@ typings/
 
 build/
 dist/
+
+*.gz
+*.pdf
+
