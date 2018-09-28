@@ -20,3 +20,19 @@ While minimax is an elegant algorithm for solving simple games, MCTS is a more p
 - expansion: one or more nodes might be created
 - simulation: one simulated game is played
 - backpropagation: result of this simulated game is backpropagated in the tree
+
+### Selection
+
+- explore new paths to gain information
+- use existing information to exploit paths known to be good
+- select child nodes using a selection function that balances exploration and exploitation
+
+MCTS + UCB1 (Upper Confidence Bound 1) = UCT (Upper Confidence Bound 1 applied to trees)
+
+UCT selection function = `(wᵢ / sᵢ) + (c * sqrt(ln sₚ / sᵢ))` (exploitation term + exploration term) (c = sqrt(2))
+
+### Expansion
+
+add a new node as a child to the last selected node in the selection phase, expanding the search tree. The statistics information in the node is initialized with 0 wins out of 0 simulations (wᵢ = 0, sᵢ = 0)
+
+### Simulation
