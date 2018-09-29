@@ -16,6 +16,15 @@
   urlcolor=black
 }
 
+\usepackage{tocloft}
+\renewcommand\cftsecfont{\normalfont}
+\renewcommand\cftsecpagefont{\normalfont}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftsecdotsep}}
+\renewcommand\cftsecdotsep{\cftdot}
+\renewcommand\cftsubsecdotsep{\cftdot}
+\renewcommand{\contentsname}{\hfill\bfseries\Large 目录\hfill}   
+\setlength{\cftbeforesecskip}{10pt}
+
 % \makeatletter
 % \def\@seccntformat#1{%
 %   \expandafter\ifx\csname c@#1\endcsname\c@section
@@ -26,17 +35,17 @@
 % \makeatother
  
 \title{GBA: A Simple Gobang AI Based on Monte-Carlo Tree Search Algorithm}
-\author{刘一龙}
+\author{硕1801\\ M201873026\\ 刘一龙}
 \date{\today}
 
-\makeatletter
-\let\headauthor\@author
-\makeatother
+% \makeatletter
+% \let\headauthor\@author
+% \makeatother
 
 \usepackage{fancyhdr}
 \setlength{\headheight}{15.2pt}
 \pagestyle{fancy}
-\lhead{\headauthor}
+\lhead{M201873026 刘一龙}
 \rhead{\leftmark}
 \cfoot{\thepage}
 
@@ -57,6 +66,6 @@ Google Deepmind's AlphaGo AI\cite{DBLP:journals/nature/SilverHMGSDSAPL16}\cite{s
 
 \bibliographystyle{unsrt}
 \bibliography{report}
-\addcontentsline{toc}{section}{参考文献}
+\addcontentsline{toc}{section}{\protect\numberline{}参考文献}
 
 \end{document}
