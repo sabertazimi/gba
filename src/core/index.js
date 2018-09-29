@@ -1,6 +1,7 @@
 import AI from './ai';
-import config from '../ai.json';
+import Game from './game';
 
-const ai = new AI(config);
-
-export default ai;
+export {
+  AI,
+  Game,
+};

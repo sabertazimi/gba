@@ -1,5 +1,5 @@
 function hashPlay(play) {
-  return `${play.x.toString()},${play.y.toString()}`;
+  return `${play.row.toString()},${play.col.toString()}`;
 }
 
 function hashState(state) {

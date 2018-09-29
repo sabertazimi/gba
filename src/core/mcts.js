@@ -30,7 +30,8 @@ class Node {
 }
 
 class MCTS {
-  constructor() {
+  constructor(game) {
+    this.game = game;
     this.name = 'MCTS';
   }
 

@@ -1,46 +1,43 @@
 import {
   EMPTY,
+  ROWS,
+  COLS,
   Score,
   AIMode,
 } from '../constants';
 
 import {
-  MapVisitor,
+  BoardVisitor,
 } from '../utils';
 
 import MCTS from './mcts';
 
+import config from '../ai.json';
+
 class AI {
-  constructor(config) {
-    this.config = config || {};
+  constructor(_config) {
+    this.config = _config || {};
     this.mode = this.config.defaultMode || AIMode.EASY;
   }
 
   /**
    * @param {object} currentState
    */
-  generateScoreMap(currentState) {
-    const {
-      map,
-      rows,
-      cols,
-      color,
-    } = currentState;
+  generateScoreBoard(currentState) {
+    if (!this.scoreBoard) {
+      this.scoreBoard = [];
 
-    if (!this.scoreMap) {
-      this.scoreMap = [];
+      for (let i = 0; i < ROWS; i += 1) {
+        this.scoreBoard[i] = new Array(COLS);
 
-      for (let i = 0; i < rows; i += 1) {
-        this.scoreMap[i] = new Array(cols);
-
-        for (let j = 0; j < cols; j += 1) {
-          this.scoreMap[i][j] = 0;
+        for (let j = 0; j < COLS; j += 1) {
+          this.scoreBoard[i][j] = 0;
         }
       }
     } else {
-      for (let i = 0; i < rows; i += 1) {
-        for (let j = 0; j < cols; j += 1) {
-          this.scoreMap[i][j] = 0;
+      for (let i = 0; i < ROWS; i += 1) {
+        for (let j = 0; j < COLS; j += 1) {
+          this.scoreBoard[i][j] = 0;
         }
       }
     }
@@ -56,195 +53,184 @@ class AI {
       [1, 1],
     ];
 
-    let humanColorCount = 0;
-    let aiColorCount = 0;
-    let emptyColorCount = 0;
+    let humanCount = 0;
+    let aiCount = 0;
+    let emptyCount = 0;
     let axisFlag = 0;
 
-    const humanCB1 = (state, xdir, ydir, step) => {
+    const humanCB1 = (state, play, xdir, ydir, step) => {
       const {
-        map: mapp,
-        x,
-        y,
-        color: hcolor,
+        board,
+        player,
       } = state;
+      const {
+        row,
+        col,
+      } = play;
 
-      const currentColor = mapp[y + ydir * step][x + xdir * step];
-      if (currentColor === hcolor) {
-        humanColorCount += 1;
+      const currentplayer = board[row + ydir * step][col + xdir * step];
+      if (currentplayer === -player) {
+        humanCount += 1;
         return true;
       }
 
-      if (currentColor === EMPTY) {
-        emptyColorCount += 1;
+      if (currentplayer === EMPTY) {
+        emptyCount += 1;
       }
 
       return false;
     };
 
-    const humanCB2 = (state) => {
+    const humanCB2 = (state, play) => {
       if (axisFlag === 0) {
         axisFlag += 1;
         return true;
       }
 
       const {
-        x,
-        y,
-      } = state;
+        row,
+        col,
+      } = play;
 
-      switch (humanColorCount) {
+      switch (humanCount) {
         case 1:
-          this.scoreMap[y][x] += Score.Kill2;
+          this.scoreBoard[row][col] += Score.Kill2;
           break;
         case 2:
-          if (emptyColorCount === 1) {
-            this.scoreMap[y][x] += Score.Kill3_1;
-          } else if (emptyColorCount === 2) {
-            this.scoreMap[y][x] += Score.Kill3_2;
+          if (emptyCount === 1) {
+            this.scoreBoard[row][col] += Score.Kill3_1;
+          } else if (emptyCount === 2) {
+            this.scoreBoard[row][col] += Score.Kill3_2;
           }
           break;
         case 3:
-          if (emptyColorCount === 1) {
-            this.scoreMap[y][x] += Score.Kill4_1;
-          } else if (emptyColorCount === 2) {
-            this.scoreMap[y][x] += Score.Kill4_2;
+          if (emptyCount === 1) {
+            this.scoreBoard[row][col] += Score.Kill4_1;
+          } else if (emptyCount === 2) {
+            this.scoreBoard[row][col] += Score.Kill4_2;
           }
           break;
         case 4:
-          this.scoreMap[y][x] += Score.Kill5;
+          this.scoreBoard[row][col] += Score.Kill5;
           break;
         default:
           break;
       }
 
-      humanColorCount = 0;
-      emptyColorCount = 0;
+      humanCount = 0;
+      emptyCount = 0;
       axisFlag = 0;
 
       return true;
     };
 
-    const aiCB1 = (state, xdir, ydir, step) => {
+    const aiCB1 = (state, play, xdir, ydir, step) => {
       const {
-        map: mapp,
-        x,
-        y,
-        color: hcolor,
+        board,
+        player,
       } = state;
+      const {
+        row,
+        col,
+      } = play;
 
-      const currentColor = mapp[y + ydir * step][x + xdir * step];
+      const currentplayer = board[row + ydir * step][col + xdir * step];
 
-      if (currentColor === EMPTY) {
-        emptyColorCount += 1;
+      if (currentplayer === EMPTY) {
+        emptyCount += 1;
         return false;
       }
 
-      if (currentColor !== hcolor) {
-        aiColorCount += 1;
+      if (currentplayer !== -player) {
+        aiCount += 1;
         return true;
       }
 
       return false;
     };
 
-    const aiCB2 = (state) => {
+    const aiCB2 = (state, play) => {
       if (axisFlag === 0) {
         axisFlag += 1;
         return true;
       }
 
       const {
-        x,
-        y,
-      } = state;
+        row,
+        col,
+      } = play;
 
-      switch (aiColorCount) {
+      switch (aiCount) {
         case 0:
-          this.scoreMap[y][x] += Score.Live1;
+          this.scoreBoard[row][col] += Score.Live1;
           break;
         case 1:
-          this.scoreMap[y][x] += Score.Live2;
+          this.scoreBoard[row][col] += Score.Live2;
           break;
         case 2:
-          if (emptyColorCount === 1) {
-            this.scoreMap[y][x] += Score.Dead3;
-          } else if (emptyColorCount === 2) {
-            this.scoreMap[y][x] += Score.Live3;
+          if (emptyCount === 1) {
+            this.scoreBoard[row][col] += Score.Dead3;
+          } else if (emptyCount === 2) {
+            this.scoreBoard[row][col] += Score.Live3;
           }
           break;
         case 3:
-          if (emptyColorCount === 1) {
-            this.scoreMap[y][x] += Score.Dead4;
-          } else if (emptyColorCount === 2) {
-            this.scoreMap[y][x] += Score.Live4;
+          if (emptyCount === 1) {
+            this.scoreBoard[row][col] += Score.Dead4;
+          } else if (emptyCount === 2) {
+            this.scoreBoard[row][col] += Score.Live4;
           }
           break;
         case 4:
-          this.scoreMap[y][x] += Score.Live5;
+          this.scoreBoard[row][col] += Score.Live5;
           break;
         default:
           break;
       }
 
-      aiColorCount = 0;
-      emptyColorCount = 0;
+      aiCount = 0;
+      emptyCount = 0;
       axisFlag = 0;
 
       return true;
     };
 
-
-    for (let i = 0; i < rows; i += 1) {
-      for (let j = 0; j < cols; j += 1) {
-        if (map[i][j] === EMPTY) {
-          MapVisitor.countOnDirections({
-            map,
-            rows,
-            cols,
-            x: j,
-            y: i,
-            color,
+    for (let i = 0; i < ROWS; i += 1) {
+      for (let j = 0; j < COLS; j += 1) {
+        if (currentState.board[i][j] === EMPTY) {
+          BoardVisitor.countOnDirections(currentState, {
+            row: i,
+            col: j,
           }, directions, 4, humanCB1, humanCB2);
-          MapVisitor.countOnDirections({
-            map,
-            rows,
-            cols,
-            x: j,
-            y: i,
-            color,
+          BoardVisitor.countOnDirections(currentState, {
+            row: i,
+            col: j,
           }, directions, 4, aiCB1, aiCB2);
         }
       }
     }
   }
 
-  getBestPlayByScoreMap(currentState) {
-    const {
-      map,
-      rows,
-      cols,
-    } = currentState;
-
+  getBestPlayByScoreBoard(currentState) {
     let maxScore = 0;
     const bestPlays = [];
 
-    this.generateScoreMap(currentState);
+    this.generateScoreBoard(currentState);
 
-    for (let i = 0; i < rows; i += 1) {
-      for (let j = 0; j < cols; j += 1) {
-        if (map[i][j] === EMPTY) {
-          if (this.scoreMap[i][j] > maxScore) {
-            maxScore = this.scoreMap[i][j];
+    for (let i = 0; i < ROWS; i += 1) {
+      for (let j = 0; j < COLS; j += 1) {
+        if (currentState.board[i][j] === EMPTY) {
+          if (this.scoreBoard[i][j] > maxScore) {
+            maxScore = this.scoreBoard[i][j];
             bestPlays.splice(0);
             bestPlays.push({
-              x: j,
-              y: i,
+              row: i,
+              col: j,
             });
-          } else if (this.scoreMap[i][j] === maxScore) {
+          } else if (this.scoreBoard[i][j] === maxScore) {
             bestPlays.push({
-              x: j,
-              y: i,
+              row: i,
+              col: j,
             });
           }
         }
@@ -256,10 +242,9 @@ class AI {
       return bestPlays[randomNum];
     }
 
-
     return {
-      x: -1,
-      y: -1,
+      row: -1,
+      col: -1,
     };
   }
 
@@ -267,19 +252,20 @@ class AI {
     if (this.mode === AIMode.MEDIUM) {
       MCTS.runSearch(currentState, 1);
     }
+
     const bestPlay = MCTS.bestPlay(currentState);
     return bestPlay;
   }
 
   /**
-   * @param {matrix} map
+   * @param {matrix} board
    */
   getBestPlay(currentState) {
     let bestPlay;
 
     switch (this.mode) {
       case AIMode.EASY:
-        bestPlay = this.getBestPlayByScoreMap(currentState);
+        bestPlay = this.getBestPlayByScoreBoard(currentState);
         break;
       case AIMode.MEDIUM:
       case AIMode.HARD:
@@ -287,8 +273,8 @@ class AI {
         break;
       default:
         bestPlay = {
-          x: -1,
-          y: -1,
+          row: -1,
+          col: -1,
         };
         break;
     }
@@ -300,20 +286,12 @@ class AI {
     this.mode = mode || AIMode.EASY;
   }
 
-  /**
-   * @param {array} map current gobang board map
-   * @param {number} rows board size
-   * @param {number} cols board size
-   * @param {number} x position last player setting
-   * @param {number} y position last player setting
-   * @param {number} color color of last player
-   * @returns object of {x, y} if x === -1 || y === -1, disable AI (PvP mode)
-   * @memberof AI
-   */
   process(currentState) {
     const bestPlay = this.getBestPlay(currentState);
     return bestPlay;
   }
 }
 
-export default AI;
+const ai = new AI(config);
+
+export default ai;

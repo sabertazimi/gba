@@ -3,12 +3,10 @@ import {
   hashState,
 } from './hash';
 
-import MapVisitor from './mapVisitor';
-import StateManager from './stateManager';
+import BoardVisitor from './boardVisitor';
 
 export {
   hashPlay,
   hashState,
-  MapVisitor,
-  StateManager,
+  BoardVisitor,
 };

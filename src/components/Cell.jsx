@@ -11,16 +11,16 @@ import './Cell.scss';
 
 const Cell = (props) => {
   const {
-    x,
-    y,
+    row,
+    col,
     val,
   } = props;
 
   const styles = {
     width: CELL_SIZE,
     height: CELL_SIZE,
-    top: y * CELL_SIZE,
-    left: x * CELL_SIZE,
+    top: row * CELL_SIZE,
+    left: col * CELL_SIZE,
   };
 
   let innerClass = '';
@@ -45,8 +45,8 @@ const Cell = (props) => {
 };
 
 Cell.propTypes = {
-  x: PropTypes.number.isRequired,
-  y: PropTypes.number.isRequired,
+  row: PropTypes.number.isRequired,
+  col: PropTypes.number.isRequired,
   rows: PropTypes.number.isRequired,
   cols: PropTypes.number.isRequired,
   val: PropTypes.number.isRequired,
