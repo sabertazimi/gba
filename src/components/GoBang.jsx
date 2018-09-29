@@ -72,7 +72,7 @@ class GoBang extends React.Component {
       map,
     };
 
-    StateManager.saveState(state);
+    StateManager.storeState(state);
     this.setState(state);
     localStorage.clear();
   }
@@ -138,7 +138,7 @@ class GoBang extends React.Component {
         map,
       };
 
-      StateManager.saveState(state);
+      StateManager.storeState(state);
       this.setState(state);
     }
   }

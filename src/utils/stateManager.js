@@ -6,7 +6,7 @@ import {
 import MapVisitor from './mapVisitor';
 
 const StateManger = {
-  saveState: (state) => {
+  storeState: (state) => {
     localStorage.setItem('gobang-state', JSON.stringify(state));
   },
   loadState: () => (JSON.parse(localStorage.getItem('gobang-state'))),
