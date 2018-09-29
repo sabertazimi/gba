@@ -8,6 +8,8 @@ import {
   MapVisitor,
 } from '../utils';
 
+import MCTS from './mcts';
+
 class AI {
   constructor(config) {
     this.config = config || {};
@@ -217,7 +219,7 @@ class AI {
     }
   }
 
-  getMaxPointByScoreMap(currentState) {
+  getBestPlayByScoreMap(currentState) {
     const {
       map,
       rows,
@@ -225,7 +227,7 @@ class AI {
     } = currentState;
 
     let maxScore = 0;
-    const maxPoints = [];
+    const bestPlays = [];
 
     this.generateScoreMap(currentState);
 
@@ -234,13 +236,13 @@ class AI {
         if (map[i][j] === EMPTY) {
           if (this.scoreMap[i][j] > maxScore) {
             maxScore = this.scoreMap[i][j];
-            maxPoints.splice(0);
-            maxPoints.push({
+            bestPlays.splice(0);
+            bestPlays.push({
               x: j,
               y: i,
             });
           } else if (this.scoreMap[i][j] === maxScore) {
-            maxPoints.push({
+            bestPlays.push({
               x: j,
               y: i,
             });
@@ -249,9 +251,9 @@ class AI {
       }
     }
 
-    if (maxPoints.length) {
-      const randomNum = Math.floor(Math.random() * maxPoints.length);
-      return maxPoints[randomNum];
+    if (bestPlays.length) {
+      const randomNum = Math.floor(Math.random() * bestPlays.length);
+      return bestPlays[randomNum];
     }
 
 
@@ -261,28 +263,37 @@ class AI {
     };
   }
 
+  getBestPlayByMCTS(currentState) {
+    if (this.mode === AIMode.MEDIUM) {
+      MCTS.runSearch(currentState, 1);
+    }
+    const bestPlay = MCTS.bestPlay(currentState);
+    return bestPlay;
+  }
+
   /**
    * @param {matrix} map
    */
-  getMaxPoint(currentState) {
-    let maxPoint;
+  getBestPlay(currentState) {
+    let bestPlay;
 
     switch (this.mode) {
       case AIMode.EASY:
-        maxPoint = this.getMaxPointByScoreMap(currentState);
+        bestPlay = this.getBestPlayByScoreMap(currentState);
         break;
+      case AIMode.MEDIUM:
       case AIMode.HARD:
-        maxPoint = this.getMaxPointByMCTS(currentState);
+        bestPlay = this.getBestPlayByMCTS(currentState);
         break;
       default:
-        maxPoint = {
+        bestPlay = {
           x: -1,
           y: -1,
         };
         break;
     }
 
-    return maxPoint;
+    return bestPlay;
   }
 
   setMode(mode) {
@@ -300,8 +311,8 @@ class AI {
    * @memberof AI
    */
   process(currentState) {
-    const maxPoint = this.getMaxPoint(currentState);
-    return maxPoint;
+    const bestPlay = this.getBestPlay(currentState);
+    return bestPlay;
   }
 }
 

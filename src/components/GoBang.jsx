@@ -41,6 +41,7 @@ class GoBang extends React.Component {
       }
 
       this.state = {
+        playHistory: [],
         turn: BLACK,
         result: EMPTY,
         map,
@@ -67,6 +68,7 @@ class GoBang extends React.Component {
     }
 
     const state = {
+      playHistory: [],
       turn: BLACK,
       result: EMPTY,
       map,
@@ -83,6 +85,7 @@ class GoBang extends React.Component {
       cols,
     } = this.props;
     const {
+      playHistory,
       turn,
       map,
     } = this.state;
@@ -98,6 +101,10 @@ class GoBang extends React.Component {
     if (!map[y][x]) {
       // row y, column x
       map[y][x] = turn;
+      playHistory.push({
+        x,
+        y,
+      });
       let afterResult = StateManager.checkResult({
         map,
         rows,
@@ -109,7 +116,7 @@ class GoBang extends React.Component {
       let afterTurn = reverseTurn(turn);
 
       if (afterResult === EMPTY) {
-        const aiStep = AI.process({
+        const aiPlay = AI.process({
           map,
           rows,
           cols,
@@ -118,14 +125,15 @@ class GoBang extends React.Component {
           color: turn,
         });
 
-        if (aiStep.x !== -1 && aiStep.y !== -1) {
-          map[aiStep.y][aiStep.x] = afterTurn;
+        if (aiPlay.x !== -1 && aiPlay.y !== -1) {
+          map[aiPlay.y][aiPlay.x] = afterTurn;
+          playHistory.push(aiPlay);
           afterResult = StateManager.checkResult({
             map,
             rows,
             cols,
-            x: aiStep.x,
-            y: aiStep.y,
+            x: aiPlay.x,
+            y: aiPlay.y,
             color: afterTurn,
           });
           afterTurn = reverseTurn(afterTurn);
