@@ -1,7 +1,7 @@
 {
   "name": "gba",
   "introduction": "a simple GoBang ai",
-  "defaultMode": "medium",
+  "defaultMode": "easy",
   "sampleMap": [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],

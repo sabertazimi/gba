@@ -21,16 +21,16 @@ class AI {
   bestPlay(currentState) {
     switch (this.config.mode) {
       case AIMode.EASY:
-        MCTS.runSearch(currentState, 1);
+        MCTS.runSearch(currentState, 0.1);
         break;
       case AIMode.MEDIUM:
-        MCTS.runSearch(currentState, 3);
+        MCTS.runSearch(currentState, 1);
         break;
       case AIMode.HARD:
-        MCTS.runSearch(currentState, 6);
+        MCTS.runSearch(currentState, 3);
         break;
       default:
-        MCTS.runSearch(currentState, 3);
+        MCTS.runSearch(currentState, 1);
         break;
     }
 
