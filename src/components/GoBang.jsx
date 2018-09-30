@@ -11,17 +11,14 @@ import {
 import Grid from './Grid';
 import Cell from './Cell';
 
-import {
-  AI,
-  Game,
-} from '../core';
+import Game from '../core';
 
 import './GoBang.scss';
 
 class GoBang extends React.Component {
   constructor(props) {
     super(props);
-    this.state = Game.getInitState();
+    this.state = Game.loadState();
     this.reset = this.reset.bind(this);
     this.handleClick = this.handleClick.bind(this);
   }
@@ -44,8 +41,9 @@ class GoBang extends React.Component {
       winner,
       board,
     } = this.state;
-    const cellNodes = [];
     let infoText = '';
+    const cellNodes = [];
+
     switch (winner) {
       case BLACK:
         infoText = 'Black Wins';
@@ -57,7 +55,7 @@ class GoBang extends React.Component {
         infoText = 'Dead Game';
         break;
       default:
-        infoText = `vs ${AI.config.name} (AI)`;
+        infoText = `vs ${Game.ai.name} (AI)`;
         break;
     }
 
@@ -100,7 +98,7 @@ class GoBang extends React.Component {
             <br />
             <em>
               (
-              {`${AI.mode} mode`}
+              {`${Game.ai.mode} mode`}
               )
             </em>
             <br />

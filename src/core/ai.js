@@ -17,7 +17,7 @@ import config from '../ai.json';
 class AI {
   constructor(_config) {
     this.config = _config || {};
-    this.mode = this.config.defaultMode || AIMode.EASY;
+    this.config.mode = this.config.defaultMode || AIMode.EASY;
   }
 
   /**
@@ -249,7 +249,7 @@ class AI {
   }
 
   getBestPlayByMCTS(currentState) {
-    if (this.mode === AIMode.MEDIUM) {
+    if (this.config.mode === AIMode.MEDIUM) {
       MCTS.runSearch(currentState, 1);
     }
 
@@ -263,7 +263,7 @@ class AI {
   getBestPlay(currentState) {
     let bestPlay;
 
-    switch (this.mode) {
+    switch (this.config.mode) {
       case AIMode.EASY:
         bestPlay = this.getBestPlayByScoreBoard(currentState);
         break;
@@ -283,7 +283,7 @@ class AI {
   }
 
   setMode(mode) {
-    this.mode = mode || AIMode.EASY;
+    this.config.mode = mode || AIMode.EASY;
   }
 
   process(currentState) {

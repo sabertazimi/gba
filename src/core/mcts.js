@@ -3,7 +3,7 @@
  */
 
 import {
-  hashPlay,
+  Hash,
 } from '../utils';
 
 /* eslint-disable */
@@ -21,7 +21,7 @@ class Node {
 
     for (let i = 0; i < unexpandedPlays.length; i += 1) {
       const curPlay = unexpandedPlays[i];
-      this.children.set(hashPlay(curPlay), {
+      this.children.set(Hash.play(curPlay), {
         play: curPlay,
         node: null,
       });
@@ -29,23 +29,16 @@ class Node {
   }
 }
 
-class MCTS {
-  constructor(game) {
-    this.game = game;
-    this.name = 'MCTS';
-  }
-
+const MCTS = {
   runSearch(state, timeout) {
     // @TODO
     return state + timeout + this.game;
-  }
+  },
 
   bestPlay(state) {
     // @TODO
     return state + this.game;
-  }
-}
+  },
+};
 
-const mcts = new MCTS();
-
-export default mcts;
+export default MCTS;
