@@ -6,6 +6,8 @@ import {
   Hash,
 } from '../utils';
 
+import SM from './stateMachine';
+
 /* eslint-disable */
 
 class Node {
@@ -29,16 +31,44 @@ class Node {
   }
 }
 
-const MCTS = {
-  runSearch(state, timeout) {
-    // @TODO
-    return state + timeout + this.game;
-  },
+class MCTS {
+  constructor(UCB1ExploreParam = 2) {
+    this.UCB1ExploreParam = UCB1ExploreParam;
+    this.nodes = new Map();
+  }
+
+  makeNode(state) {
+    if (!this.nodes.has(Hash.state(state))) {
+      const unexpandedPlays = SM.legalPlays(state).slice();
+      const node = new Node(null, null, state, unexpandedPlays);
+      this.nodes.set(Hash.state(state), node);
+    }
+  }
+
+  runSearch(state, timeout = 3) {
+    this.makeNode(state);
+
+    const end = Date.now() + timeout * 1000;
+
+    while (Date.now() < end) {
+      let node = this.select(state);
+      let winner = GM.checkWinner(node.state, node.play);
+
+      if (node.isLeaf() === false && winner === EMPTY) {
+        node = this.expand(node);
+        winner = this.simulate(node);
+      }
+
+      this.backpropagate(node, winner);
+    }
+  }
 
   bestPlay(state) {
     // @TODO
     return state + this.game;
-  },
-};
+  }
+}
 
-export default MCTS;
+const mcts = new MCTS();
+
+export default mcts;
