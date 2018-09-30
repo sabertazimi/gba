@@ -182,7 +182,8 @@ class MCTS {
       node.nPlays += 1;
 
       // winner info for parent node
-      if (node.parent.state.player === winner) {
+      // node.parent.state.player === winner
+      if (node.state.player === -winner) {
         node.nWins += 1;
       }
 
@@ -225,15 +226,45 @@ class MCTS {
     for (let i = 0; i < allPlays.length; i += 1) {
       const play = allPlays[i];
       const childNode = node.childNode(play);
+      const winRate = childNode.nWins / childNode.nPlays;
+      // const winRate = childNode.nPlays;
 
-      if (childNode.nPlays > max) {
+      if (winRate > max) {
         bestPlay = play;
-        max = childNode.nPlays;
-        // max = childNode.nWins / childNode.nPlays;
+        max = winRate;
       }
     }
 
     return bestPlay;
+  }
+
+  getStats(state) {
+    const node = this.nodes.get(Hash.state(state));
+    const stats = {
+      play: node.play,
+      nPlays: node.nPlays,
+      nWins: node.nWins,
+      children: [],
+    };
+
+
+    node.children.forEach((child) => {
+      if (child.node === null) {
+        stats.children.push({
+          play: child.play,
+          nPlays: null,
+          nWins: null,
+        });
+      } else {
+        stats.children.push({
+          play: child.play,
+          nPlays: child.node.nPlays,
+          nWins: child.node.nWins,
+        });
+      }
+    });
+
+    return stats;
   }
 }
 

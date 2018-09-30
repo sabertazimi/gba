@@ -78,16 +78,30 @@ const StateMachine = {
     return true;
   },
 
-  checkWinner(state, play) {
-    if (!play) {
-      console.log('play is undefined, return EMPTY');
-      return EMPTY;
+  checkWinnerWithoutPlay(state) {
+    const {
+      board,
+    } = state;
+
+    for (let i = 1; i < ROWS; i += 1) {
+      for (let j = 1; j < COLS; j += 1) {
+        if (board[i][j] === EMPTY) {
+          const winner = this.checkWinnerWithPlay(state, {
+            row: i,
+            col: j,
+          });
+
+          if (winner !== EMPTY) {
+            return winner;
+          }
+        }
+      }
     }
 
-    if (this.isDeadGame(state)) {
-      return DEATH;
-    }
+    return EMPTY;
+  },
 
+  checkWinnerWithPlay(state, play) {
     const directions = [
       [-1, 0],
       [1, 0],
@@ -132,6 +146,18 @@ const StateMachine = {
     return EMPTY;
   },
 
+  checkWinner(state, play) {
+    if (this.isDeadGame(state)) {
+      return DEATH;
+    }
+
+    if (!play) {
+      return this.checkWinnerWithoutPlay(state);
+    }
+
+    return this.checkWinnerWithPlay(state, play);
+  },
+
   legalPlays(state) {
     const legalPlays = [];
 
@@ -139,10 +165,9 @@ const StateMachine = {
       for (let i = ROWS - 1; i >= 0; i -= 1) {
         if (state.board[i][j] === EMPTY) {
           legalPlays.push({
-            i,
-            j,
+            row: i,
+            col: j,
           });
-          break;
         }
       }
     }
