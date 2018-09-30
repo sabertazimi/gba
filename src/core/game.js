@@ -7,7 +7,9 @@ import AI from './ai';
 
 const Game = {
   getInitState() {
-    return SM.getInitState();
+    const state = SM.getInitState();
+    SM.storeState(state);
+    return state;
   },
 
   loadState() {
