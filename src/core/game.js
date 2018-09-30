@@ -1,5 +1,6 @@
 import {
   EMPTY,
+  AIMode,
 } from '../constants';
 
 import SM from './stateMachine';
@@ -14,6 +15,23 @@ const Game = {
 
   loadState() {
     return SM.loadState();
+  },
+
+  changeMode() {
+    switch (this.ai.mode) {
+      case AIMode.EASY:
+        AI.setMode(AIMode.MEDIUM);
+        break;
+      case AIMode.MEDIUM:
+        AI.setMode(AIMode.HARD);
+        break;
+      case AIMode.HARD:
+        AI.setMode(AIMode.EASY);
+        break;
+      default:
+        AI.setMode(AIMode.EASY);
+        break;
+    }
   },
 
   handleHumanPlay(state, play) {

@@ -21,6 +21,7 @@ class GoBang extends React.Component {
     this.state = Game.loadState();
     this.reset = this.reset.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.changeMode = this.changeMode.bind(this);
   }
 
   reset() {
@@ -34,6 +35,12 @@ class GoBang extends React.Component {
     });
 
     this.setState(newState);
+  }
+
+  changeMode() {
+    Game.changeMode();
+    const state = Game.loadState();
+    this.setState(state);
   }
 
   render() {
@@ -96,6 +103,10 @@ class GoBang extends React.Component {
               {infoText}
             </strong>
             <br />
+            <br />
+            (Click to reset)
+          </button>
+          <button type="button" className="info__button" onClick={() => { this.changeMode(); }}>
             <em>
               (
               {`${Game.ai.mode} mode`}
@@ -103,7 +114,7 @@ class GoBang extends React.Component {
             </em>
             <br />
             <br />
-            (Click to reset)
+            (Click to change AI mode)
           </button>
         </div>
       </div>
