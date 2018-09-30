@@ -49,23 +49,26 @@
 \rhead{\leftmark}
 \cfoot{\thepage}
 
+\pagenumbering{roman}
+
 \begin{document}
 \maketitle
 \newpage
 \tableofcontents
 \newpage
 
-\section*{摘要}\sectionmark{摘要}
-\addcontentsline{toc}{section}{\protect\numberline{}摘要}
-Monte-Carlo tree search algorithm\cite{DBLP:conf/ecml/KocsisS06}\cite{DBLP:conf/aiide/ChaslotBSS08}
+\include{abstract}
 \newpage
 
-\section{引言}
-Google Deepmind's AlphaGo AI\cite{DBLP:journals/nature/SilverHMGSDSAPL16}\cite{silver2017mastering}
+\pagenumbering{arabic}
+\include{intro}
+\newpage
+\include{optimization}
 \newpage
 
 \bibliographystyle{unsrt}
 \bibliography{report}
 \addcontentsline{toc}{section}{\protect\numberline{}参考文献}
+\newpage
 
 \end{document}

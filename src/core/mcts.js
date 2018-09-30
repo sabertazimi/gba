@@ -11,6 +11,7 @@ import {
 } from '../utils';
 
 import SM from './stateMachine';
+import SBTS from './sbts';
 
 class Node {
   constructor(parent, play, state, unexpandedPlays) {
@@ -37,8 +38,6 @@ class Node {
 
     if (child === undefined) {
       throw new Error('No such play!');
-    } else if (child.node === null) {
-      throw new Error('Child is not expanded!');
     }
 
     return child.node;
@@ -139,6 +138,7 @@ class MCTS {
       node = node.childNode(bestPlay);
     }
 
+
     return node;
   }
 
@@ -146,6 +146,10 @@ class MCTS {
     // get a random one unexpanded play
     const plays = node.unexpandedPlays();
     const play = plays[Math.floor(Math.random() * plays.length)];
+    // const bestPlays = SBTS.bestPlays(node.state);
+    // const play = plays.find(play1 => bestPlays.some(
+    //   play2 => play1.row === play2.row && play1.col === play2.col,
+    // )) || plays[Math.floor(Math.random() * plays.length)];
 
     // expand child node with above play
     const childState = SM.nextState(node.state, play);
@@ -157,7 +161,7 @@ class MCTS {
 
   /* eslint-disable */
   simulate(node) {
-  /* eslint-enable */
+    /* eslint-enable */
     let {
       state,
     } = node;
@@ -165,7 +169,17 @@ class MCTS {
 
     while (winner === EMPTY) {
       const plays = SM.legalPlays(state);
+
+      if (plays.length === 0) {
+        break;
+      }
+
       const play = plays[Math.floor(Math.random() * plays.length)];
+      // const bestPlays = SBTS.bestPlays(state);
+      // const play = plays.find(play1 => bestPlays.some(
+      //   play2 => play1.row === play2.row && play1.col === play2.col,
+      // )) || plays[Math.floor(Math.random() * plays.length)];
+
       state = SM.nextState(state, play);
       const {
         winner: newWinner,
@@ -213,10 +227,9 @@ class MCTS {
   bestPlay(state) {
     this.makeNode(state);
 
-    // if not all children are expanded, not enough information
-    if (this.nodes.get(Hash.state(state)).isFullyExpanded() === false) {
-      throw new Error('Not enough information!');
-    }
+    // if (this.nodes.get(Hash.state(state)).isFullyExpanded() === false) {
+    //   throw new Error('Not enough information!');
+    // }
 
     const node = this.nodes.get(Hash.state(state));
     const allPlays = node.allPlays();
@@ -226,13 +239,21 @@ class MCTS {
     for (let i = 0; i < allPlays.length; i += 1) {
       const play = allPlays[i];
       const childNode = node.childNode(play);
-      const winRate = childNode.nWins / childNode.nPlays;
-      // const winRate = childNode.nPlays;
 
-      if (winRate > max) {
-        bestPlay = play;
-        max = winRate;
+      // expanded child node
+      if (childNode) {
+        const winRate = childNode.nWins / childNode.nPlays;
+
+        if (winRate > max) {
+          bestPlay = play;
+          max = winRate;
+        }
       }
+    }
+
+    // downgrade to SBTS
+    if (!bestPlay) {
+      bestPlay = SBTS.bestPlay(state);
     }
 
     return bestPlay;
@@ -246,7 +267,6 @@ class MCTS {
       nWins: node.nWins,
       children: [],
     };
-
 
     node.children.forEach((child) => {
       if (child.node === null) {

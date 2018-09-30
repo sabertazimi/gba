@@ -10,6 +10,8 @@ import {
   BoardVisitor,
 } from '../utils';
 
+import SBTS from './sbts';
+
 const StateMachine = {
   getInitState() {
     const board = [];
@@ -159,20 +161,7 @@ const StateMachine = {
   },
 
   legalPlays(state) {
-    const legalPlays = [];
-
-    for (let j = 0; j < COLS; j += 1) {
-      for (let i = ROWS - 1; i >= 0; i -= 1) {
-        if (state.board[i][j] === EMPTY) {
-          legalPlays.push({
-            row: i,
-            col: j,
-          });
-        }
-      }
-    }
-
-    return legalPlays;
+    return SBTS.bestPlays(state);
   },
 };
 
