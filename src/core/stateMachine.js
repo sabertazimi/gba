@@ -79,6 +79,11 @@ const StateMachine = {
   },
 
   checkWinner(state, play) {
+    if (!play) {
+      console.log('play is undefined, return EMPTY');
+      return EMPTY;
+    }
+
     if (this.isDeadGame(state)) {
       return DEATH;
     }
