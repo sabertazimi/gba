@@ -29,6 +29,75 @@ class Node {
       });
     }
   }
+
+  childNode(play) {
+    const child = this.children.get(Hash.play(play));
+
+    if (child === undefined) {
+      throw new Error('No such play!');
+    } else if (child.node === null) {
+      throw new Error("Child is not expanded!");
+    }
+
+    return child.node;
+  }
+
+  expand(play, childState, unexpandedPlays) {
+    if (!this.children.has(Hash.play(play))) {
+      throw new Error("No such play!");
+    }
+
+    const childNode = new Node(this, play, childState, unexpandedPlays);
+    this.children.set(Hash.play(play), { play: play, node: childNode });
+
+    return childNode;
+  }
+
+  allPlays() {
+    const ret = [];
+
+    for (let child of this.children.values()) {
+      ret.push(child.play);
+    }
+
+    return ret;
+  }
+
+  unexpandedPlays() {
+    const ret = [];
+
+    for (let child of this.children.values()) {
+      if (child.node === null) {
+        ret.push(child.play);
+      }
+    }
+
+    return ret;
+  }
+
+  isFullyExpanded() {
+    for (let child of this.children.values()) {
+      if (child.node === null) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  isLeaf() {
+    if (this.children.size === 0) {
+      return true;
+    }
+
+    return false;
+  }
+
+  getUCB1(biasParam) {
+    const exploitTerm =  this.nWins / this.nPlays;
+    const exploreTerm = Math.sqrt(biasParam * Math.log(this.parent.nPlays) / this.nPlays);
+    return exploitTerm + exploreTerm;
+  }
 }
 
 class MCTS {
