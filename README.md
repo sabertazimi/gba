@@ -31,11 +31,17 @@ MCTS + UCB1 (Upper Confidence Bound 1) = UCT (Upper Confidence Bound 1 applied t
 
 UCT selection function = `(wᵢ / sᵢ) + (c * sqrt(ln sₚ / sᵢ))` (exploitation term + exploration term) (c = sqrt(2))
 
+Starting from the root node of the search tree, we go down the tree by repeatedly (1) selecting a legal move and (2) advancing to the corresponding child node. If one, several, or all of the legal moves in a node does not have a corresponding node in the search tree, we stop selection.
+
 ### Expansion
 
 add a new node as a child to the last selected node in the selection phase, expanding the search tree. The statistics information in the node is initialized with 0 wins out of 0 simulations (wᵢ = 0, sᵢ = 0)
 
+After selection stops, there will be at least one unexpanded move in the search tree. Now, we randomly choose one of them and we then create the child node corresponding to that move (bolded in the diagram). We add this node as a child to the last selected node in the selection phase, expanding the search tree. The statistics information in the node is initialized with 0 wins out of 0 simulations.
+
 ### Simulation
+
+Continuing from the newly-created node in the expansion phase, moves are selected randomly and the game state is repeatedly advanced. This repeats until the game is finished and a winner emerges. No new nodes are created in this phase.
 
 ### Backpropagation
 
@@ -45,3 +51,5 @@ add a new node as a child to the last selected node in the selection phase, expa
 If black wins, so each visited white node’s win count is incremented. This flip is due to the fact that each node’s statistics are used for its parent node’s choice, not its own
 
 The UCB1 function, in turn, uses the numbers of wins wᵢ and simulations sᵢ of the children nodes, and the number of simulations of the parent node sₚ
+
+After the simulation phase, the statistics on all the visited nodes (bolded in the diagram) are updated. Each visited node has its simulation count incremented. Depending on which player wins, its win count may also be incremented. In the diagram, black wins, so each visited white node’s win count is incremented. This flip is due to the fact that each node’s statistics are used for its parent node’s choice, not its own.
