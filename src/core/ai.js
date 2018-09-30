@@ -250,7 +250,9 @@ class AI {
 
   getBestPlayByMCTS(currentState) {
     if (this.config.mode === AIMode.MEDIUM) {
-      MCTS.runSearch(currentState, 1);
+      MCTS.runSearch(currentState, 3);
+    } else {
+      MCTS.runSearch(currentState, 6);
     }
 
     const bestPlay = MCTS.bestPlay(currentState);
