@@ -48,8 +48,8 @@
 \usepackage{fancyhdr}
 \setlength{\headheight}{15.2pt}
 \pagestyle{fancy}
-\lhead{M201873026 刘一龙}
-\rhead{\leftmark}
+\lhead{\leftmark}
+\rhead{M201873026 刘一龙}
 \cfoot{\thepage}
 
 \begin{document}
@@ -65,6 +65,17 @@
 
 \pagenumbering{roman}
 
+\section*{摘要}\sectionmark{摘要}
+\addcontentsline{toc}{section}{\protect\numberline{}摘要}
+Monte-Carlo tree search algorithm\cite{DBLP:conf/ecml/KocsisS06}\cite{DBLP:conf/aiide/ChaslotBSS08}
+\newpage
+
+\section*{Abstract}\sectionmark{Abstract}
+Monte-Carlo tree search algorithm\cite{DBLP:conf/ecml/KocsisS06}\cite{DBLP:conf/aiide/ChaslotBSS08}
+\newpage
+
+\pagenumbering{gobble} % no page number
+
 \tableofcontents
 \newpage
 
@@ -73,11 +84,6 @@
 \newpage
 
 \pagenumbering{arabic}
-
-\section*{摘要}\sectionmark{摘要}
-\addcontentsline{toc}{section}{\protect\numberline{}摘要}
-Monte-Carlo tree search algorithm\cite{DBLP:conf/ecml/KocsisS06}\cite{DBLP:conf/aiide/ChaslotBSS08}
-\newpage
 
 \section{引言}
 Google Deepmind's AlphaGo AI\cite{DBLP:journals/nature/SilverHMGSDSAPL16}\cite{silver2017mastering}
