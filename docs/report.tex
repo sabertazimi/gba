@@ -1,9 +1,12 @@
 % !TEX program = xelatex
 % !BIB program = bibtex
 
+% \begin{filecontents}{report.bib}
+% \end{filecontents} 
+
 \documentclass[UTF8]{ctexart}
 \usepackage{amsmath,amssymb,fancyhdr,url}
-\usepackage[super,square,comma]{natbib} % for \citet and \citep
+\usepackage[super,square,comma,sort]{natbib} % for \citet and \citep
 \usepackage{graphicx}
 % \usepackage[pdftex]{graphicx}
 
@@ -49,21 +52,42 @@
 \rhead{\leftmark}
 \cfoot{\thepage}
 
-\pagenumbering{roman}
-
 \begin{document}
+
+\pagenumbering{gobble} % no page number
+
 \maketitle
 \newpage
+
+% empty page
+\null\thispagestyle{empty}
+\newpage
+
+\pagenumbering{roman}
+
 \tableofcontents
 \newpage
 
-\include{abstract}
+% empty page
+\null\thispagestyle{empty}
 \newpage
 
 \pagenumbering{arabic}
-\include{intro}
+
+\section*{摘要}\sectionmark{摘要}
+\addcontentsline{toc}{section}{\protect\numberline{}摘要}
+Monte-Carlo tree search algorithm\cite{DBLP:conf/ecml/KocsisS06}\cite{DBLP:conf/aiide/ChaslotBSS08}
 \newpage
-\include{optimization}
+
+\section{引言}
+Google Deepmind's AlphaGo AI\cite{DBLP:journals/nature/SilverHMGSDSAPL16}\cite{silver2017mastering}
+\newpage
+
+\section{Optimization}
+\subsection{Score Board Optimization}
+use score board standard to generate legal plays for expansion and simulate phase
+\subsection{Result}
+smarter
 \newpage
 
 \bibliographystyle{unsrt}
