@@ -5,10 +5,12 @@
 % \end{filecontents} 
 
 \documentclass[UTF8,cs4size]{ctexart}
-\usepackage{amsmath,amssymb,fancyhdr,url}
+\usepackage{amsmath,amssymb,url}
 \usepackage[super,square,comma,sort]{natbib} % for \citet and \citep
-\usepackage{graphicx}
 \usepackage[left=3cm,right=3cm]{geometry}
+
+\usepackage{graphicx}
+\graphicspath{figures/}
 
 \ctexset{
   section = {
@@ -80,7 +82,7 @@
 \pagenumbering{roman}
 
 \section*{摘要}\sectionmark{摘要}
-\addcontentsline{toc}{section}{\protect\numberline{}摘要}
+\addcontentsline{toc}{section}{摘要}
 Monte-Carlo tree search algorithm\cite{wiki:Monte_Carlo_tree_search}\cite{DBLP:conf/ecml/KocsisS06}\cite{DBLP:conf/aiide/ChaslotBSS08}
 \newpage
 
@@ -111,8 +113,9 @@ smarter
 \newpage
 
 \bibliographystyle{unsrt}
-\bibliography{report}
-\addcontentsline{toc}{section}{\protect\numberline{}参考文献}
+\bibliography{bibs/report}
+\addcontentsline{toc}{section}{参考文献}
+% \addcontentsline{toc}{section}{\protect\numberline{}参考文献}
 \newpage
 
 \end{document}
