@@ -1,17 +1,11 @@
 % !TEX program = xelatex
 % !BIB program = bibtex
 
-% \begin{filecontents}{report.bib}
-% \end{filecontents} 
-
 \documentclass[UTF8,cs4size]{ctexart}
-\usepackage{amsmath,amssymb,url}
-\usepackage[super,square,comma,sort]{natbib} % for \citet and \citep
+
+% layout
 \usepackage[left=3cm,right=3cm]{geometry}
-
-\usepackage{graphicx}
-\graphicspath{figures/}
-
+\linespread{1}
 \ctexset{
   section = {
     name = \S
@@ -19,7 +13,27 @@
   subsection/name = \S,
   subsubsection/name = \S
 }
+% \makeatletter
+% \def\@seccntformat#1{%
+%   \expandafter\ifx\csname c@#1\endcsname\c@section
+%   Section \thesection:
+%   \else
+%   \csname the#1\endcsname\quad
+%   \fi}
+% \makeatother
+ 
+% page headings
+\usepackage{fancyhdr}
+\setlength{\headheight}{15.2pt}
+\pagestyle{fancy}
+\lhead{\leftmark}
+\rhead{M201873026 刘一龙}
+\cfoot{\thepage}
+% \makeatletter
+% \let\headauthor\@author
+% \makeatother
 
+% url/ref
 \usepackage{hyperref}
 \hypersetup{
   colorlinks,
@@ -31,12 +45,12 @@
   pdftitle={人工智能结课报告}
 }
 
-%% vertical centering title page
+% vertical centering title page
 \usepackage{titling}
 \renewcommand\maketitlehooka{\null\mbox{}\vfill}
 \renewcommand\maketitlehookd{\vfill\null}
 
-%% table of contents
+% table of contents
 \usepackage{tocloft}
 \renewcommand\cftsecfont{\normalfont}
 \renewcommand\cftsecpagefont{\normalfont}
@@ -46,29 +60,34 @@
 \renewcommand{\contentsname}{\hfill\bfseries\Large 目录\hfill}   
 \setlength{\cftbeforesecskip}{10pt}
 
-% \makeatletter
-% \def\@seccntformat#1{%
-%   \expandafter\ifx\csname c@#1\endcsname\c@section
-%   Section \thesection:
-%   \else
-%   \csname the#1\endcsname\quad
-%   \fi}
-% \makeatother
- 
+% figures
+\usepackage{graphicx}
+\graphicspath{figures/}
+% \newcommand\figureht{\dimexpr
+%   \textheight-3\baselineskip-\parskip-.2em-
+%   \abovecaptionskip-\belowcaptionskip\relax}
+
+% tables
+\usepackage{caption} 
+\captionsetup[table]{skip=10pt}
+
+% math, algorithms, code
+\usepackage{amsmath,amssymb,url}
+\usepackage{algorithm, algorithmic}
+\usepackage{listings}
+
+% bibliography
+\usepackage[super,square,comma,sort]{natbib} % for \citet and \citep
+\renewcommand{\refname}{\S 参考文献}
+% \begin{filecontents}{report.bib}
+% \end{filecontents} 
+
+% appendix
+\usepackage{appendix}
+
 \title{人工智能结课报告\\ \bigskip \textbf{GBA: A Simple Gobang AI Based on Monte-Carlo Tree Search Algorithm}}
 \author{计算机科学与技术学院\\ 硕1801\\ M201873026\\ 刘一龙}
 \date{\today}
-
-% \makeatletter
-% \let\headauthor\@author
-% \makeatother
-
-\usepackage{fancyhdr}
-\setlength{\headheight}{15.2pt}
-\pagestyle{fancy}
-\lhead{\leftmark}
-\rhead{M201873026 刘一龙}
-\cfoot{\thepage}
 
 \begin{document}
 
@@ -83,12 +102,12 @@
 
 \pagenumbering{roman}
 
-\section*{摘要}\sectionmark{摘要}
-\addcontentsline{toc}{section}{摘要}
+\section*{\S 摘要}\sectionmark{\S 摘要}
+\addcontentsline{toc}{section}{\S 摘要}
 Monte-Carlo tree search algorithm\cite{wiki:Monte_Carlo_tree_search}\cite{DBLP:conf/ecml/KocsisS06}\cite{DBLP:conf/aiide/ChaslotBSS08}
 \newpage
 
-\section*{Abstract}\sectionmark{Abstract}
+\section*{\S Abstract}\sectionmark{\S Abstract}
 Monte-Carlo tree search algorithm\cite{wiki:Monte_Carlo_tree_search}\cite{DBLP:conf/ecml/KocsisS06}\cite{DBLP:conf/aiide/ChaslotBSS08}
 \newpage
 
@@ -116,7 +135,7 @@ smarter
 
 \bibliographystyle{unsrt}
 \bibliography{bibs/report}
-\addcontentsline{toc}{section}{参考文献}
+\addcontentsline{toc}{section}{\S 参考文献}
 % \addcontentsline{toc}{section}{\protect\numberline{}参考文献}
 \newpage
 

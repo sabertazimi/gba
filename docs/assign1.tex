@@ -2,15 +2,10 @@
 % !BIB program = bibtex
 
 \documentclass[UTF8,cs4size]{ctexart}
-\usepackage{amsmath,amssymb,url}
+
+% layout
 \usepackage[left=3cm,right=3cm]{geometry}
-
-\usepackage[super,square,comma,sort]{natbib} % for \citet and \citep
-\renewcommand{\refname}{\S 参考文献}
-
-\usepackage{graphicx}
-\graphicspath{figures/}
-
+\linespread{1}
 \ctexset{
   section = {
     name = \S
@@ -19,6 +14,15 @@
   subsubsection/name = \S
 }
 
+% page headings
+\usepackage{fancyhdr}
+\setlength{\headheight}{15.2pt}
+\pagestyle{fancy}
+\lhead{\leftmark}
+\rhead{M201873026 刘一龙}
+\cfoot{\thepage}
+
+% url/ref
 \usepackage{hyperref}
 \hypersetup{
   colorlinks,
@@ -30,16 +34,12 @@
   pdftitle={迷宫最短路径问题}
 }
 
-\usepackage{appendix}
-
-\usepackage{listings}
-
-%% vertical centering title page
+% vertical centering title page
 \usepackage{titling}
 \renewcommand\maketitlehooka{\null\mbox{}\vfill}
 \renewcommand\maketitlehookd{\vfill\null}
 
-%% table of contents
+% table of contents
 \usepackage{tocloft}
 \renewcommand\cftsecfont{\normalfont}
 \renewcommand\cftsecpagefont{\normalfont}
@@ -49,22 +49,32 @@
 \renewcommand{\contentsname}{\hfill\bfseries\Large 目录\hfill}   
 \setlength{\cftbeforesecskip}{10pt}
 
+% figures
+\usepackage{graphicx}
+\graphicspath{figures/}
+% \newcommand\figureht{\dimexpr
+%   \textheight-3\baselineskip-\parskip-.2em-
+%   \abovecaptionskip-\belowcaptionskip\relax}
+
+% tables
+\usepackage{caption} 
+\captionsetup[table]{skip=10pt}
+
+% math, algorithms, code
+\usepackage{amsmath,amssymb,url}
 \usepackage{algorithm, algorithmic}
+\usepackage{listings}
+
+% bibliography
+\usepackage[super,square,comma,sort]{natbib} % for \citet and \citep
+\renewcommand{\refname}{\S 参考文献}
+
+% appendix
+\usepackage{appendix}
 
 \title{\textbf{Assignment1: 迷宫最短路径问题}}
 \author{计算机科学与技术学院\\ 硕1801\\ M201873026\\ 刘一龙}
 \date{\today}
-
-\usepackage{fancyhdr}
-\setlength{\headheight}{15.2pt}
-\pagestyle{fancy}
-\lhead{\leftmark}
-\rhead{M201873026 刘一龙}
-\cfoot{\thepage}
-
-% \newcommand\figureht{\dimexpr
-%   \textheight-3\baselineskip-\parskip-.2em-
-%   \abovecaptionskip-\belowcaptionskip\relax}
 
 \begin{document}
 
