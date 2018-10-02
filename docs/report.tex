@@ -8,7 +8,15 @@
 \usepackage{amsmath,amssymb,fancyhdr,url}
 \usepackage[super,square,comma,sort]{natbib} % for \citet and \citep
 \usepackage{graphicx}
-% \usepackage[pdftex]{graphicx}
+\usepackage[left=3cm,right=3cm]{geometry}
+
+\ctexset{
+  section = {
+    name = \S
+  },
+  subsection/name = \S,
+  subsubsection/name = \S
+}
 
 \usepackage{hyperref}
 \hypersetup{
@@ -19,6 +27,12 @@
   urlcolor=black
 }
 
+%% vertical centering title page
+\usepackage{titling}
+\renewcommand\maketitlehooka{\null\mbox{}\vfill}
+\renewcommand\maketitlehookd{\vfill\null}
+
+%% table of contents
 \usepackage{tocloft}
 \renewcommand\cftsecfont{\normalfont}
 \renewcommand\cftsecpagefont{\normalfont}
@@ -67,11 +81,11 @@
 
 \section*{摘要}\sectionmark{摘要}
 \addcontentsline{toc}{section}{\protect\numberline{}摘要}
-Monte-Carlo tree search algorithm\cite{DBLP:conf/ecml/KocsisS06}\cite{DBLP:conf/aiide/ChaslotBSS08}
+Monte-Carlo tree search algorithm\cite{wiki:Monte_Carlo_tree_search}\cite{DBLP:conf/ecml/KocsisS06}\cite{DBLP:conf/aiide/ChaslotBSS08}
 \newpage
 
 \section*{Abstract}\sectionmark{Abstract}
-Monte-Carlo tree search algorithm\cite{DBLP:conf/ecml/KocsisS06}\cite{DBLP:conf/aiide/ChaslotBSS08}
+Monte-Carlo tree search algorithm\cite{wiki:Monte_Carlo_tree_search}\cite{DBLP:conf/ecml/KocsisS06}\cite{DBLP:conf/aiide/ChaslotBSS08}
 \newpage
 
 \pagenumbering{gobble} % no page number

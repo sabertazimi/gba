@@ -9,21 +9,6 @@
     "build": "cross-env NODE_ENV=production webpack --mode production",
     "lint": "stylelint ./src/**/*.scss && eslint --ext .js --ext .jsx ./src"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "src/**/*.{js,jsx}": [
-      "eslint --fix",
-      "git add"
-    ],
-    "src/**/*.scss": [
-      "stylelint --fix",
-      "git add"
-    ]
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sabertazimi/webpack-boilerplate.git"
