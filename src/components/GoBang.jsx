@@ -107,11 +107,9 @@ class GoBang extends React.Component {
             (Click to reset)
           </button>
           <button type="button" className="info__button" onClick={() => { this.changeMode(); }}>
-            <em>
-              (
+            <strong>
               {`${Game.ai.mode} mode`}
-              )
-            </em>
+            </strong>
             <br />
             <br />
             (Click to change AI mode)
