@@ -149,7 +149,29 @@ MoGo 程序\cite{DBLP:conf/cig/WangG07}\cite{DBLP:conf/icml/GellyS07}利用 UCT 
 \newpage
 
 \section{蒙特卡洛树搜索}
+蒙特卡罗树搜索（MCTS），是一种使用随机模拟的最佳优先原则的搜索算法。其基本过程如图~\ref{fig:mcts_phase}所示。
+在阶段（1）中，现有信息用于重复选择连续的子节点直到搜索树的末尾。接下来，在阶段（2）中，通过添加节点来扩展搜索树。
+然后，在阶段（3）中，模拟运行到最后以确定获胜者。
+最后，在阶段（4）中，使用从模拟游戏获得的新信息更新所选路径中的所有节点。
+重复运行这种 4 阶段算法，直到收集到足够的信息以产生良好的下一步选择。
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=\textwidth,height=5cm]{figures/final_mcts_phase.png}
+  \caption{MCTS 算法基本过程\cite{DBLP:conf/aiide/ChaslotBSS08}}
+  \label{fig:mcts_phase}
+\end{figure}
+
+重要的是要注意搜索树在结构上与游戏树相同，并且搜索树还包含从模拟中收集的统计信息，搜索树是整个游戏树的一个子集。
+
 \subsection{结点选择（Selection）}
+在树中找到状态时，根据存储的统计数据选择下一个操作，以便在开发和探索（Exploration Term and Exploitation Term）之间取得平衡。
+一方面，任务通常是选择导致迄今为止最佳结果的游戏动作（利用）。 另一方面，由于评估（探索）的不确定性，仍然需要探索不太有希望的行动。
+\begin{equation}
+  \frac{w_i}{s_i} + c\sqrt{\frac{\ln{s_p}}{s_i}}
+  \label{eq:uct}
+\end{equation}
+
 \subsection{结点扩展（Expansion）}
 \subsection{搜索树模拟（Simulation）}
 \subsection{状态回播（Backpropagation）}
