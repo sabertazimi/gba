@@ -73,7 +73,7 @@
 
 % math, algorithms, code
 \usepackage{amsmath,amssymb,url}
-\usepackage{algorithm, algorithmic}
+\usepackage{algorithm,algorithmicx,algpseudocode}
 \usepackage{listings}
 
 \lstset{
@@ -232,19 +232,19 @@ GBA 系统落子完毕后，玩家可以继续落子，直到决出胜者或达�
 
 \begin{algorithm}
   \floatname{algorithm}{流程}
-	\renewcommand{\algorithmicrequire}{\textbf{输入:}}
-	\renewcommand{\algorithmicensure}{\textbf{输出:}}
+	\algrenewcommand\algorithmicrequire{\textbf{输入：}}
+	\algrenewcommand\algorithmicensure{\textbf{输出：}}
 	\caption{游戏主流程}
 	\label{alg:game_main}
   \begin{algorithmic}[1]
-    \WHILE{未决出胜者 $OR$ 未达成和局}
-      \STATE handleClick($row$, $col$)
-      \STATE $play \leftarrow$ ($row$, $col$)
-      \STATE $newState \leftarrow$ StateMachine.nextState($state$, $play$)
-      \STATE $aiPlay \leftarrow$ AI.bestPlay($newState$)
-      \STATE $newState \leftarrow$ StateMachine.nextState($newState$, $aiPlay$)
-    \ENDWHILE
-    \RETURN $newState$
+    \While{未决出胜者 $OR$ 未达成和局}
+      \State handleClick($row$, $col$)
+      \State $play \gets$ ($row$, $col$)
+      \State $newState \gets$ StateMachine.nextState($state$, $play$)
+      \State $aiPlay \gets$ AI.bestPlay($newState$)
+      \State $newState \gets$ StateMachine.nextState($newState$, $aiPlay$)
+    \EndWhile
+    \Return $newState$
 	\end{algorithmic}  
 \end{algorithm}
 
@@ -277,10 +277,146 @@ GBA 系统落子完毕后，玩家可以继续落子，直到决出胜者或达�
 其对于 UCT 算法的实现细节主要参考了 Sylvai Gelly 的一篇文章\cite{DBLP:journals/ai/GellyS11}。
 本节主要阐述 MCTS.js 模块中的一些实现细节。
 \subsubsection{智能主流程}
+对于给定游戏状态（棋局分布），GBA 系统通过 2 步给出下一步理想落子。首先，通过蒙特卡洛树搜索 4 个阶段收集足够的游戏统计信息；
+然后，通过分析这些游戏统计信息，给出下一步理想落子。
+
+其基本框架如流程~\ref{alg:mcts_main}所示。
+根据当前游戏状态，创建搜索树根节点。
+接下来进行 4 阶段的不停迭代，直到达到时限。
+首先，在当前深度选择一个 UCT 值最大的节点，若游戏未到此步结束，
+则在此节点基础上扩展一个新的子节点，然后沿着此路径进行随机模拟，直至游戏结束。
+最后根据游戏结果，回播游戏统计信息，完成一次 4 阶段迭代。
+
+\begin{algorithm}
+  \floatname{algorithm}{流程}
+	\algrenewcommand{\algorithmicrequire}{\textbf{输入：}}
+	\algrenewcommand{\algorithmicensure}{\textbf{输出：}}
+	\caption{GBA 系统主流程}
+	\label{alg:mcts_main}
+  \begin{algorithmic}[1]
+    \Function{runSearch}{$state$, $timeout$}
+      \State $rootNode \gets$ makeNode($state$)
+      \While{未到 $timeout$ 时限}
+        \State $node \gets$ MCTS.select($state$)
+        \State $winner \gets$ StateMachine.checkWinner($node.state$)
+        \If{isNotLeaf($node$) AND 未决出胜者 $winner$}
+          \State $node \gets nextNode \gets$ MCTS.expand($node$)
+          \State $winner \gets$ MCTS.simulate($node$)
+        \EndIf
+        \State MCTS.backpropagate($node$, $winner$)
+      \EndWhile
+    \EndFunction
+	\end{algorithmic}  
+\end{algorithm}
+
 \subsubsection{选择过程}
+如流程~\ref{alg:mcts_select}所示，首先，根据游戏状态找到搜索树根节点；
+然后，根据当前状态所有可行解，确定下一步落子集合；
+在落子集合中，找出 UCT 值最大的节点便可完成选择。
+
+\begin{algorithm}
+  \floatname{algorithm}{流程}
+	\algrenewcommand{\algorithmicrequire}{\textbf{输入：}}
+	\algrenewcommand{\algorithmicensure}{\textbf{输出：}}
+	\caption{GBA 系统选择过程}
+	\label{alg:mcts_select}
+  \begin{algorithmic}[1]
+    \Function{select}{$state$}
+      \State $node \gets$ Tree.getNode($state$)
+      \While{$node$ 存在未扩展的子节点}
+        \State $plays \gets$ node.allPlays($state$)
+        \State $childNodes \gets$ Tree.getNodes($plays$)
+        \State $bestNode \gets$ maxUCT($childNodes$)
+        \State $node \gets bestNode$
+      \EndWhile
+      \Return $node$
+    \EndFunction
+	\end{algorithmic}  
+\end{algorithm}
+
 \subsubsection{扩展过程}
+如流程~\ref{alg:mcts_expand}所示，
+对于上一阶段选取的节点，计算其下一步可能进行的所有未扩展的落子，
+选定一个可能的落子，计算新的游戏状态，扩展子节点，将新扩展的子节点插入搜索树。
+
+\begin{algorithm}
+  \floatname{algorithm}{流程}
+	\algrenewcommand{\algorithmicrequire}{\textbf{输入：}}
+	\algrenewcommand{\algorithmicensure}{\textbf{输出：}}
+	\caption{GBA 系统扩展过程}
+	\label{alg:mcts_expand}
+  \begin{algorithmic}[1]
+    \Function{expand}{$node$}
+      \State $plays \gets$ unexpandedPlays($node$)
+      \State $play \gets$ random($plays$)
+      \State $childState \gets$ StateMachine.nextState($node.state$, $play$)
+      \State $childNode \gets$ expandChild($node$)
+      \State $Tree \gets$ Tree.insert($cihldNode$)
+      \Return $childNode$
+    \EndFunction
+	\end{algorithmic}  
+\end{algorithm}
+
 \subsubsection{模拟过程}
+如流程~\ref{alg:mcts_simulate}所示，
+从上一阶段扩展的节点开始，根据其对应的游戏状态，
+计算其下一步可行的落子集合，
+随机选取一个落子，计算出新的游戏状态，
+若决出胜者，则终止此轮模拟；
+否则，根据新的游戏状态继续落子。
+
+\begin{algorithm}
+  \floatname{algorithm}{流程}
+	\algrenewcommand{\algorithmicrequire}{\textbf{输入：}}
+	\algrenewcommand{\algorithmicensure}{\textbf{输出：}}
+	\caption{GBA 系统模拟过程}
+	\label{alg:mcts_simulate}
+  \begin{algorithmic}[1]
+    \Function{simulate}{$node$}
+      \State $state \gets$ state($node$)
+      \State $winner \gets$ StateMachine.checkWinner($state$)
+      \While{未决出胜者 $winner$ OR 达成和局}
+        \State $plays \gets$ allLegalPlays($state$)
+        \State $play \gets$ random($plays$)
+        \State $state \gets$ StateMachine.nextState($state$, $play$)
+        \State $winner \gets$ StateMachine.checkWinner($state$)
+      \EndWhile
+      \Return $winner$
+    \EndFunction
+	\end{algorithmic}  
+\end{algorithm}
+
 \subsubsection{回播过程}
+如流程~\ref{alg:mcts_backpropagate}所示，
+从扩展阶段得到的节点开始，向搜索树根节点开始反向遍历（父亲节点），
+根据游戏结果，增加每个节点的模拟计数与胜利计数，
+从而完成游戏信息回播。
+
+\begin{algorithm}
+  \floatname{algorithm}{流程}
+	\algrenewcommand{\algorithmicrequire}{\textbf{输入：}}
+	\algrenewcommand{\algorithmicensure}{\textbf{输出：}}
+	\caption{GBA 系统回播过程}
+	\label{alg:mcts_backpropagate}
+  \begin{algorithmic}[1]
+    \Function{backpropagate}{$node$, $winner$}
+      \While{未到根节点}
+        \State s($node$) $+= 1$
+        \If{$node.player === $ reverse($winner$)}
+          \State w($node$) $+= 1$
+        \EndIf
+        \State $node \gets$ parent($node$)
+      \EndWhile
+    \EndFunction
+	\end{algorithmic}  
+\end{algorithm}
+
+\subsubsection{选出理想落子}
+在规定时限（$timeout$）到达后，
+完成了 $N$ 轮蒙特卡洛树搜索 4 阶段迭代。
+根据节点上得到的游戏统计信息，选出下一步的理想落子。
+GBA 系统简单地选择胜率最高的落子，即拥有 $w_i/s_i$ 最大值的落子。
+
 \newpage
 
 \section{五子棋对弈算法优化}
@@ -291,10 +427,59 @@ GBA 系统落子完毕后，玩家可以继续落子，直到决出胜者或达�
 
 利用计分板策略计算当前棋局局势，得出下一步较为优势的落子集合，缩小搜索树，
 可以大幅度提升 GBA 系统的落子选择表现。
+
+计分板优化策略根据五子棋的领域知识，对棋盘上所有可行落子的地方进行打分。
+如某落子处在某一方向（横/竖/左斜/右斜）形成了“杀4”（即阻断对方五子连续）局势，
+则为该处落子增加 50000 分；
+如某落子处在某一方向（横/竖/左斜/右斜）形成了“活3”（即本方三子连续，且两端都有空位）局势，
+则为该处落子增加 50 分；
+如某落子处在某一方向（横/竖/左斜/右斜）形成了“死3”（即本方三子连续，只有一端都有空位）局势，
+则为该处落子增加 25 分；
+如某落子处在某一方向（横/竖/左斜/右斜）形成了“连5”（即本方五子连续）局势，
+则为该处落子增加 90000 分。
+
+采取一系列类似的策略，得到所有可行落子的评分集合，称为计分板。
+选取计分板中得分较高的一些落子，放入下一步可行落子集合，
+返回给 GBA 系统进行蒙特卡洛树搜索的扩展和模拟阶段。
+所有计分策略与对应分数如表~\ref{tab:score_board}所示。
+
+\begin{table}[htbp]
+  \caption{计分板策略分数评定}
+  \label{tab:score_board}
+  \centering
+  \begin{tabular}[c]{l|l}
+    \hline
+    局势 & 分数 \\
+    \hline
+	  杀 2 & 10 \\
+	  杀 3（一端空位）& 30 \\
+	  杀 3 （两端空位）& 40 \\
+	  杀 4（一端空位）& 60 \\
+	  杀 4 （两端空位）& 110 \\
+	  杀 5 & 50100 \\
+	  活 2 & 10 \\
+	  死 3 & 25 \\
+	  活 3 & 50 \\
+	  死 4 & 55 \\
+	  活 4 & 100 \\
+	  活 5 & 90000 \\
+   \hline
+  \end{tabular}
+\end{table}
+
 \subsection{算法优化结果}
 优化前截图
 
 优化后截图
+\newpage
+
+\section{总结}
+GBA 系统实现了基本的对弈功能，但受限于浏览器的运算能力，
+其棋力还十分地孱弱。在使用随机模拟策略时，其落子选择表现异常糟糕。
+利用计分板策略进行优化后，才使得其消除了极为糟糕的落子选择（如未能杀 4）。
+希望未来能有机会将其蒙特卡洛树搜索部分移植到系统语言上，
+JavaScript 只实现图形界面部分，从而提升 GBA 系统的棋力。
+本系统代码尚未开源，若需获取源代码，请通过邮箱联系本文作者（~\href{mailto:sabertazimi@gmail.com}{sabertazimi@gmail.com}）。
 \newpage
 
 \bibliographystyle{unsrt}
