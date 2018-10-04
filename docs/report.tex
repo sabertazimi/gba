@@ -154,6 +154,7 @@ MoGo 程序\cite{DBLP:conf/cig/WangG07}\cite{DBLP:conf/icml/GellyS07}利用 UCT 
 然后，在阶段（3）中，模拟运行到最后以确定获胜者。
 最后，在阶段（4）中，使用从模拟游戏获得的新信息更新所选路径中的所有节点。
 重复运行这种 4 阶段算法，直到收集到足够的信息以产生良好的下一步选择。
+重要的是要注意搜索树在结构上与游戏树相同，并且搜索树还包含从模拟中收集的统计信息，搜索树是整个游戏树的一个子集。
 
 \begin{figure}[htb]
   \centering
@@ -162,25 +163,124 @@ MoGo 程序\cite{DBLP:conf/cig/WangG07}\cite{DBLP:conf/icml/GellyS07}利用 UCT 
   \label{fig:mcts_phase}
 \end{figure}
 
-重要的是要注意搜索树在结构上与游戏树相同，并且搜索树还包含从模拟中收集的统计信息，搜索树是整个游戏树的一个子集。
-
 \subsection{结点选择（Selection）}
+从搜索树的根节点开始，通过重复（1）选择合法移动和（2）前进到相应的子节点来扩展树。
+如果节点中的一个，几个或所有合法移动在搜索树中没有相应的节点，便会停止选择。
 在树中找到状态时，根据存储的统计数据选择下一个操作，以便在开发和探索（Exploration Term and Exploitation Term）之间取得平衡。
-一方面，任务通常是选择导致迄今为止最佳结果的游戏动作（利用）。 另一方面，由于评估（探索）的不确定性，仍然需要探索不太有希望的行动。
+一方面，任务通常是选择导致迄今为止最佳结果的游戏动作（利用）；另一方面，由于评估（探索）的不确定性，仍然需要探索不太有希望的行动，
+即应该探索获取信息的新途径，同时利用现有信息来利用已知良好的路径。
+
+一种（坏）方法是随机选择路径。 随机选择可以很好地探索，但它根本没有利用已知信息。
+另一种（同样糟糕的）方法是使用每个节点的平均赢率，这实现了很好地利用了已知信息，但在无法探索更多未知路径。
+有学者提出利用 UCB（Upper Confidence Bound）公式来决定下一节点的选择\cite{DBLP:conf/ecml/KocsisS06}，
+当将其应用于蒙特卡洛树搜索时，被称为 UCT（Upper Confidence Bound Apply to Tree）算法。
+
 \begin{equation}
-  \frac{w_i}{s_i} + c\sqrt{\frac{\ln{s_p}}{s_i}}
+  \text{UCT} = \frac{w_i}{s_i} + c\sqrt{\frac{\ln{s_p}}{s_i}}
   \label{eq:uct}
 \end{equation}
 
+公式~\eqref{eq:uct}称为“UCT 函数”，分为 2 部分：左部为利用值，右部为探索值。其中，
+$w_i$ 表示此节点的模拟次数导致获胜；
+$s_i$ 表示此节点的模拟总数；
+$s_p$ 表示父节点的模拟总数；
+$c$ 表示探索参数。
+$\frac{w_i}{s_i}$ 表示当前节点的游戏平均胜率，当选择该值较大的节点时，可以很好地利用已知信息做出下一步行动；
+$\sqrt{\frac{\ln{s_p}}{s_i}}$ 表示当前节点的模拟频率（被遍历的概率），当选择该值较大的节点（较少模拟）时，可以很好地探索未知路径。
+探索参数 $c$ 只是可以选择的一个数字，它控制着等式中利用值与探索值之间的权重大小，选择的通常数字是 $c = \sqrt{2}$。
+
+每次需要在多个子节点之间进行选择时，便使用公式~\eqref{eq:uct}（即 UCT 函数）来获取每个子节点的 UCT 值，并选择具有最大值的子节点。
+在选择阶段，使用 UCT 选择功能来决定选择哪个子节点。
+反之，UCT 函数使用子节点的获胜次数 $w_i$ 和模拟次数 $s_i$ 以及父节点的模拟次数 $s_p$ 来生成每个子节点的 UCT 值。
+此信息在反向传播阶段（即第 4 阶段）更新，因此，获得此迭代的信息将影响下一次迭代的移动选择，依此类推。
+
 \subsection{结点扩展（Expansion）}
+选择阶段结束后，搜索树中将至少有一个未访问的移动（以下称为未扩展移动，Unexpanded Play）。
+随机选择一个未展开的移动，然后创建与该移动相对应的子节点（如图~\ref{fig:mcts_phase}所示）。
+将此节点作为子节点添加到选择阶段中的最后一个选定节点，从而扩展搜索树。
+节点中的统计信息初始化为 0 次模拟与 0 次胜利（即 $w_i = 0$，$s_i = 0$）。
+
 \subsection{搜索树模拟（Simulation）}
+对于游戏的其余部分，随机选择动作直到游戏结束（决出胜者或达成和局），这一过程称为搜索树模拟。
+从扩展阶段中新创建的节点继续，随机选择移动并重复进行游戏状态。
+在这个阶段，只是简单地应用游戏规则来重复（1）找到当前游戏状态下的所有合法移动，（2）随机选择一个合法移动，然后（3）推进游戏状态。
+不存储此过程的任何部分，当到达游戏结束的状态时，此阶段结束。
+即这一过程重复进行，直到比赛结束，都不会创建新节点。
+动作选择概率的适当加权对游戏水平具有显着影响。
+如果以相同的概率选择所有行动，则所采用的策略通常较弱，并且蒙特卡洛搜索的水平不是最理想的。
+
 \subsection{状态回播（Backpropagation）}
+在一轮模拟阶段结束之后，更新所有访问节点（即从根节点开始至结束节点路径上的所有节点）的统计数据（如图~\ref{fig:mcts_phase}所示），这一过程称为状态回播。
+每个被访问节点的模拟计数 $s_i$ 递增。
+根据哪个玩家获胜，其获胜次数 $w_i$ 也可以递增。
+若黑方获胜，因此每个访问的白色节点的获胜计数都会增加。
+这是由于每个节点的统计数据用于其父节点的选择，而不是它自己的选择。
+
+\subsection{选择最优行动}
+重复上述 4 个步骤，进行完足够的迭代后，搜索树上会存储足够的游戏信息，
+用于选出下一步理想中最优的行动。
+例如，可以简单地选取 $\frac{w_i}{s_i}$ 最大值的子节点作为下一步行动。
+
 \newpage
 
 \section{五子棋系统概述}
 \subsection{五子棋游戏框架实现}
+本游戏利用 React\cite{web:react}框架实现，将图形界面封装为三个组件，并将逻辑模块绑定至相关点击事件。
+\subsubsection{游戏主流程}
+在玩家点击棋盘一个完成落子后，GBA 系统会根据棋局当前局势，利用蒙特卡洛树搜索，在给定的时限内（不同的时限会影响 GBA 系统的强度）给出落子选择。
+GBA 系统落子完毕后，玩家可以继续落子，直到决出胜者或达成和局，如流程~\ref{alg:game_main}所示。
+
+\begin{algorithm}
+  \floatname{algorithm}{流程}
+	\renewcommand{\algorithmicrequire}{\textbf{输入:}}
+	\renewcommand{\algorithmicensure}{\textbf{输出:}}
+	\caption{游戏主流程}
+	\label{alg:game_main}
+  \begin{algorithmic}[1]
+    \WHILE{未决出胜者 $OR$ 未达成和局}
+      \STATE handleClick($row$, $col$)
+      \STATE $play \leftarrow$ ($row$, $col$)
+      \STATE $newState \leftarrow$ StateMachine.nextState($state$, $play$)
+      \STATE $aiPlay \leftarrow$ AI.bestPlay($newState$)
+      \STATE $newState \leftarrow$ StateMachine.nextState($newState$, $aiPlay$)
+    \ENDWHILE
+    \RETURN $newState$
+	\end{algorithmic}  
+\end{algorithm}
+
+\subsubsection{游戏核心模块}
+\paragraph{StateMachine.js}
+实现了一些与游戏状态相关的函数，如 nextState、isDeadGame、checkWinner 等。
+\paragraph{MCTS.js}
+实现了蒙特卡洛树搜索策略，对外提供了 2 个 API：MCTS.runSearch 与 MCTS.bestPlay。
+\paragraph{AI.js}
+实现了 GBA 系统，利用 MCTS.js 提供的 API 构建完整的五子棋人工智能。
+\paragraph{Game.js}
+实现了五子棋游戏的主要逻辑，如 mainLoop、load/storeState、changeGameMode 等。
+图形界面的各种点击事件主要是由 Game.js 模块的各个函数进行处理的。
+\subsubsection{界面设计}
+利用 React 框架，遵循组件复用原则，利用 Cell 与 Grid 组件构建了 Gobang，
+最后完成了五子棋游戏的图像界面。游戏界面如图~\ref{fig:UI}所示。
+
+本游戏的在线版已发布于~\href{http://ai.hust.cf}{ai.hust.cf}，
+可以访问该网站与 GBA 系统进行对弈。
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=\textwidth,height=7cm]{figures/final_UI.png}
+  \caption{五子棋游戏主界面}
+  \label{fig:UI}
+\end{figure}
+
 \subsection{五子棋人工智能实现}
-本文的蒙特卡洛树搜索框架参考了 Michael Liu 的一篇文章\cite{web:medium_mcts}。
+本文的蒙特卡洛树搜索框架参考了 Michael Liu 的一篇文章\cite{web:medium_mcts}，
+其对于 UCT 算法的实现细节主要参考了 Sylvai Gelly 的一篇文章\cite{DBLP:journals/ai/GellyS11}。
+本节主要阐述 MCTS.js 模块中的一些实现细节。
+\subsubsection{智能主流程}
+\subsubsection{选择过程}
+\subsubsection{扩展过程}
+\subsubsection{模拟过程}
+\subsubsection{回播过程}
 \newpage
 
 \section{五子棋对弈算法优化}
