@@ -244,7 +244,7 @@ GBA 系统落子完毕后，玩家可以继续落子，直到决出胜者或达�
       \State $aiPlay \gets$ AI.bestPlay($newState$)
       \State $newState \gets$ StateMachine.nextState($newState$, $aiPlay$)
     \EndWhile
-    \Return $newState$
+    \State \textbf{return} $newState$
 	\end{algorithmic}  
 \end{algorithm}
 
@@ -329,7 +329,7 @@ GBA 系统落子完毕后，玩家可以继续落子，直到决出胜者或达�
         \State $bestNode \gets$ maxUCT($childNodes$)
         \State $node \gets bestNode$
       \EndWhile
-      \Return $node$
+      \State \textbf{return} $node$
     \EndFunction
 	\end{algorithmic}  
 \end{algorithm}
@@ -352,7 +352,7 @@ GBA 系统落子完毕后，玩家可以继续落子，直到决出胜者或达�
       \State $childState \gets$ StateMachine.nextState($node.state$, $play$)
       \State $childNode \gets$ expandChild($node$)
       \State $Tree \gets$ Tree.insert($cihldNode$)
-      \Return $childNode$
+      \State \textbf{return} $childNode$
     \EndFunction
 	\end{algorithmic}  
 \end{algorithm}
@@ -381,7 +381,7 @@ GBA 系统落子完毕后，玩家可以继续落子，直到决出胜者或达�
         \State $state \gets$ StateMachine.nextState($state$, $play$)
         \State $winner \gets$ StateMachine.checkWinner($state$)
       \EndWhile
-      \Return $winner$
+      \State \textbf{return} $winner$
     \EndFunction
 	\end{algorithmic}  
 \end{algorithm}
