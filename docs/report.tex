@@ -33,6 +33,9 @@
 % \let\headauthor\@author
 % \makeatother
 
+% footnote
+\renewcommand\thefootnote{\fnsymbol{footnote}}
+
 % url/ref
 \usepackage{hyperref}
 \hypersetup{
@@ -145,7 +148,8 @@
 MoGo 程序\cite{DBLP:conf/cig/WangG07}\cite{DBLP:conf/icml/GellyS07}利用 UCT 算法将自身胜率提升了将近一倍，并成功击败了棋力强劲的围棋业余选手。
 10 年后的今天，DeepMind 的学者研制出的 AlphaGo 人工智能更是成功地击败了人类顶尖围棋选手柯洁。
 
-本文提出实现 GBA（GoBang Ai）系统，一个基于蒙特卡洛树搜索的简单五子棋人工智能系统，将最简单的基于 UCT 的蒙特卡洛树搜索策略移植到五子棋游戏上。
+本文提出实现 GBA（GoBang Ai）系统\footnote{本系统的在线版已发布于~\href{http://ai.hust.cf}{ai.hust.cf}，
+可以访问该网站与 GBA 系统进行对弈。}，一个基于蒙特卡洛树搜索的简单五子棋人工智能系统，将最简单的基于 UCT 的蒙特卡洛树搜索策略移植到五子棋游戏上。
 本文首先介绍蒙特卡洛搜索树算法，然后阐述 GBA 系统的整体实现，最后阐述该系统中关于对弈算法的关键优化。
 \newpage
 
@@ -262,9 +266,6 @@ GBA 系统落子完毕后，玩家可以继续落子，直到决出胜者或达�
 \subsubsection{界面设计}
 利用 React 框架，遵循组件复用原则，利用 Cell 与 Grid 组件构建了 Gobang，
 最后完成了五子棋游戏的图像界面。游戏界面如图~\ref{fig:UI}所示。
-
-本游戏的在线版已发布于~\href{http://ai.hust.cf}{ai.hust.cf}，
-可以访问该网站与 GBA 系统进行对弈。
 
 \begin{figure}[htb]
   \centering
