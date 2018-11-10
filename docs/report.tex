@@ -112,16 +112,20 @@
 \pagenumbering{gobble} % no page number
 \maketitle
 \newpage
-\null\thispagestyle{empty}
+
+\pagenumbering{roman}
+\section*{\S 摘要}\sectionmark{\S 摘要}
+\addcontentsline{toc}{section}{\S 摘要}
+本文提出实现 GBA（GoBang Ai）系统，一个基于蒙特卡洛树搜索的简单五子棋人工智能系统，
+将最简单的基于 UCT 的蒙特卡洛树搜索策略移植到五子棋游戏上。
+本文首先介绍了蒙特卡洛搜索树算法，然后阐述了 GBA 系统的整体实现，最后阐述了该系统中关于对弈算法的关键优化。
+该系统能够进行稳定的对弈，能够对于简单的活四/成五的局势进行阻断，并展开一定强度的进攻。
 \newpage
 
-% \pagenumbering{roman}
-% \section*{\S 摘要}\sectionmark{\S 摘要}
-% \addcontentsline{toc}{section}{\S 摘要}
-% \addcontentsline{toc}{section}{\protect\numberline{}\S 摘要}
-% \newpage
-% \pagenumbering{gobble} % no page number
+\pagenumbering{gobble} % no page number
 
+\null\thispagestyle{empty}
+\newpage
 \tableofcontents
 \newpage
 \null\thispagestyle{empty}
