@@ -1,6 +1,6 @@
 # gba
 
-[![Build Status](https://travis-ci.com/sabertazimi/gba.svg?token=q3rvCWEJVuEsNxEomDdy&branch=master)](https://travis-ci.com/sabertazimi/gba)
+[![Build Status](https://travis-ci.org/sabertazimi/gba.svg?branch=master)](https://travis-ci.org/sabertazimi/gba)
 
 A simple [GoBang AI](http://ai.hust.cf)
 
