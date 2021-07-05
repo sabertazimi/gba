@@ -1,6 +1,6 @@
 # gba
 
-[![Build Status](https://travis-ci.org/sabertazimi/gba.svg?branch=master)](https://travis-ci.org/sabertazimi/gba)
+[![Continuous Integration](https://github.com/sabertazimi/gba/actions/workflows/ci.yml/badge.svg)](https://github.com/sabertazimi/gba/actions/workflows/ci.yml)
 
 A simple [GoBang AI](http://ai.hust.cf)
 
