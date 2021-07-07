@@ -4,7 +4,7 @@
 [![LICENSE](https://img.shields.io/github/license/sabertazimi/gba?style=for-the-badge)](https://raw.githubusercontent.com/sabertazimi/gba/master/LICENSE)
 
 [![Code Lines](https://img.shields.io/tokei/lines/github/sabertazimi/gba?style=for-the-badge&logo=visualstudiocode)](https://github.com/sabertazimi/gba)
-[![Continuous Integration](https://img.shields.io/github/checks-status/sabertazimi/gba/master?label=Continuous%20Integration&style=for-the-badge&logo=GitHub)](https://github.com/sabertazimi/gba/actions/workflows/ci.yml)
+[![Continuous Integration](https://img.shields.io/github/workflow/status/sabertazimi/gba/Continuous%20Integration/master?style=for-the-badge&logo=github)](https://github.com/sabertazimi/gba/actions/workflows/ci.yml)
 
 A simple [GoBang AI](http://ai.hust.cf)
 
